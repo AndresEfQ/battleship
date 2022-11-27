@@ -1,0 +1,107 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.player1 {
+  height: 48vh;
+  width: 100vw;
+  transform: rotate(180deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player2 {
+  height: 48vh;
+  width: 100vw;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+h1 {
+  font-size: medium;
+}
+
+.battleship, .submarine {
+  width: 10vh;
+}
+
+.destroyer {
+  width: 6vh;
+}
+
+.cruisser {
+  width: 14vh;
+}
+
+.gameboard {
+  position: relative;
+  height: 40vh;
+  width: 36vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.cell {
+  outline: 1px solid rgb(228, 228, 228);
+  height: 3.6vh;
+  width: 3.6vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cellH {
+  height: 3.6vh;
+  width: 3.6vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+.columnHeaders {
+  display: flex;
+  position: absolute;
+}
+
+.rowHeaders {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 3.6vh;
+  left: -3.6vh;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(10, 3.6vh);
+  grid-template-rows: repeat(10, 3.6vh);
+  position: absolute;
+  top: 3.6vh;
+}
+
+button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(255, 0, 0);
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 7px;
+  font-weight: 700;
+}
