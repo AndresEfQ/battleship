@@ -265,3 +265,8 @@ describe("test gameloop logic", () => {
     }).toThrow("invalid parameter");
   })
 });
+
+/* describe("dom interaction module placeShips function", () => {
+
+  test("placeShips should take ")
+}); */
