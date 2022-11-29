@@ -24,6 +24,7 @@
 }
 
 header {
+  height: 8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -65,6 +66,10 @@ h1 {
   align-items: center;
 }
 
+.touched-cell {
+  background-color: rgb(139, 139, 255);
+}
+
 .cellH {
   height: 3vh;
   width: 3vh;
@@ -77,13 +82,14 @@ h1 {
 .columnHeaders {
   display: flex;
   position: absolute;
+  top: -3.6vh;
 }
 
 .rowHeaders {
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 3.6vh;
+  top: 0;
   left: -3.6vh;
 }
 
@@ -92,7 +98,7 @@ h1 {
   grid-template-columns: repeat(10, 3vh);
   grid-template-rows: repeat(10, 3vh);
   position: absolute;
-  top: 3vh;
+  top: 0;
 }
 
 button {

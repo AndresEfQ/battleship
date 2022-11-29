@@ -7,19 +7,32 @@ export default function Dom(gameboard) {
 
   }
 
-  this.grabShip = function (ship, gameboard, e) {
+  this.grabShip = function (e, gameboard, xDelta, yDelta) {
     /* alert('holding ship'); */
+    let ship = e.target;
     ship.style.position = 'absolute';
-    console.log(e);
-    ship.style.top = `${e.targetTouches[0].clientY - 390}px`;
-    ship.style.left = `${e.targetTouches[0].clientX - 50}px`;
-    ship.addEventListener('touchmove', (e) => {
-      ship.style.top = `${e.changedTouches[0].clientY - 390}px`;
-      ship.style.left = `${e.changedTouches[0].clientX - 50}px`;
-    });
+    ship.style.left = `${e.changedTouches[0].clientX + xDelta}px`;
+    ship.style.top = `${e.changedTouches[0].clientY + yDelta}px`;
+    let cell = document.elementFromPoint(
+      e.changedTouches[0].clientX, 
+      e.changedTouches[0].clientY
+    );
+    cell.classList.add('touched-cell');
   }
 
-  this.dragShip = function () {
+  /* this.grabShip2 = function (gameboard, e) {
+    let ship = e.target;
+    ship.style.position = 'absolute';
+    ship.style.left = `${e.changedTouches[0].clientX + 170}px`;
+    ship.style.top = `${e.changedTouches[0].clientY + 220}px`;
+    let cell = document.elementFromPoint(
+      e.changedTouches[0].clientX, 
+      e.changedTouches[0].clientY
+    );
+    cell.classList.add('touched-cell'); 
+  } */
+
+  this.dragShip = function (e) {
 
   }
 
@@ -44,4 +57,10 @@ export default function Dom(gameboard) {
 
    Position: top = 240;
              left = 240;
+
+  Event: x = 78
+         y = 15
+
+  Position: top = 234;
+            left = 250
 */
