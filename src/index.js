@@ -6,38 +6,45 @@ import "./styles/index.css"
 
 const grids = document.getElementsByClassName('grid');
 for (let grid of grids) {
-  for (let i = 0; i < 100; i++) {
+  for (let i = 1; i <= 100; i++) {
     let cell = document.createElement('div');
+    /* cell.addEventListener('touchenter', () => cell.classList.add('touched-cell'));
+    cell.addEventListener('touchleave', () => cell.classList.remove('touched-cell')); */
+    let x = i % 10 === 0 ? 10 : i % 10;
+    let y = Math.ceil(i / 10);
+    cell.dataset.coordinates = `${x},${y}`
     cell.className = 'cell';
     grid.appendChild(cell);
   }
 }
 
-const shipImages = document.getElementsByClassName('ship-img');
-for (let img of shipImages) {
-  let gameboardId = img.classList.contains('1') ? 'gameboard1' : 'gameboard2';
-  let xDelta = gameboardId === 'gameboard1' ? -50 : 170;
-  let yDelta = gameboardId === 'gameboard1' ? -390 : 220;
-  let gameboard = document.getElementById(gameboardId)
+const shipDivs = document.getElementsByClassName('ship-div');
+for (let shipDiv of shipDivs) {
+  let gameboardId = shipDiv.classList.contains('1')? 
+    'gameboard1': 
+    'gameboard2';
+  
+  let gameboard = document.getElementById(gameboardId);
   let dom = new Dom();
-  img.addEventListener('touchmove', (e) => dom.grabShip(e, gameboard, xDelta, yDelta));
+  shipDiv.addEventListener('click', (e) => console.log(e.target))
+  shipDiv.addEventListener('touchmove', (e) => dom.dragShip(e, gameboardId));
+  shipDiv.addEventListener('touchend', (e) => dom.dropShip(e, gameboard));
+  shipDiv.addEventListener('touch', (e) => showRotateShip(e));
 }
 
-/* const shipImages2 = document.getElementsByClassName('ship-img2');
-for (let img of shipImages2) {
-  let gameboard = document.getElementById('gameboard2')
+/* const gameboards = document.getElementsByClassName('gameboard');
+for (let board of gameboards) {
   let dom = new Dom();
-  img.addEventListener('touchmove', (e) => dom.grabdShip2(e, gameboard));
+  board.addEventListener('touchend', dom.dropShip);
 } */
 
 const button = document.getElementById('pass');
 button.addEventListener('click', () => alert('pass'));
 
-/* const testImg = document.getElementById('testImg');
+
+// testing
+const testImg = document.getElementById('testImg');
 const testGameboard = document.getElementById('testGameboard');
 testGameboard.addEventListener('click', (e) => {
-  console.log(e.clientX, e.clientY);
-  testImg.style.position = 'absolute';
-  testImg.style.top = e.clientY;
-  testImg.style.top = e.clientX;
-}) */
+  e.target.childNodes[0];
+})
