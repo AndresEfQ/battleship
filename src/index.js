@@ -1,7 +1,7 @@
 import Ship from "../modules/ship";
 import Gameboard from "../modules/gameboard";
 import Player from "../modules/player";
-import Dom from "../modules/dom";
+import { DomShip, DomCell } from "../modules/dom";
 import "./styles/index.css"
 
 const grids = document.getElementsByClassName('grid');
@@ -25,11 +25,10 @@ for (let shipDiv of shipDivs) {
     'gameboard2';
   
   let gameboard = document.getElementById(gameboardId);
-  let dom = new Dom();
-  shipDiv.addEventListener('click', (e) => console.log(e.target))
-  shipDiv.addEventListener('touchmove', (e) => dom.dragShip(e, gameboardId));
-  shipDiv.addEventListener('touchend', (e) => dom.dropShip(e, gameboard));
-  shipDiv.addEventListener('touch', (e) => showRotateShip(e));
+  let domShip = new DomShip();
+  shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, gameboardId));
+  shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, gameboard));
+  shipDiv.addEventListener('touch', (e) => domShip.showRotateShip(e));
 }
 
 /* const gameboards = document.getElementsByClassName('gameboard');
