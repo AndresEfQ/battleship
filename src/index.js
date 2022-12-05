@@ -23,12 +23,16 @@ for (let shipDiv of shipDivs) {
   let gameboardId = shipDiv.classList.contains('1')? 
     'gameboard1': 
     'gameboard2';
-  
+  let shipImg = shipDiv.children[1];
   let gameboard = document.getElementById(gameboardId);
-  let domShip = new DomShip();
+  let rotateButton = shipDiv.children[0];
+  let domShip = new DomShip(shipImg);
   shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, gameboardId));
   shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, gameboard));
   shipDiv.addEventListener('touch', (e) => domShip.showRotateShip(e));
+  shipDiv.addEventListener('click', (e) => domShip.showRotateShip(e));
+  rotateButton.addEventListener('touch', (e) => domShip.rotateShip(e));
+  rotateButton.addEventListener('click', (e) => domShip.rotateShip(e));
 }
 
 /* const gameboards = document.getElementsByClassName('gameboard');

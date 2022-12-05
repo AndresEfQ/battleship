@@ -1,5 +1,6 @@
-export function DomShip() {
+export function DomShip(ship) {
 
+  this.ship = ship;
   this.orientation = 'h';
   this.x0;
   this.y0;
@@ -13,36 +14,24 @@ export function DomShip() {
   }
 
   this.dragShip = function (e, gameboard) {
-    let ship = e.target.children[1];
+    this.hideAllRotateShips();
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
-    ship.style.position = 'absolute';
+    this.ship.style.position = 'absolute';
     
     if (gameboard === 'gameboard1') {
       if (!this.x0) this.x0 = e.touches[0].clientX;
       if (!this.y0) this.y0 = e.touches[0].clientY;
       console.log(e.touches[0].clientY - this.y0);
-      ship.style.bottom = `${e.touches[0].clientY - this.y0}px`;
-      ship.style.right = `${e.touches[0].clientX - this.x0}px`;
-      /* xDelta = 34;
-      yDelta = 10;
-      if (ship.classList.contains('destroyer')) xDelta -= 18;
-      if (ship.classList.contains('cruisser')) xDelta += 20;
-      ship.style.right = `${x - xDelta}px`;
-      ship.style.bottom = `${y - yDelta}px`; */
-
+      this.ship.style.bottom = `${e.touches[0].clientY - this.y0}px`;
+      this.ship.style.right = `${e.touches[0].clientX - this.x0}px`;
+ 
     } else if (gameboard === 'gameboard2') {
       if (!this.x0) this.x0 = e.touches[0].clientX;
       if (!this.y0) this.y0 = e.touches[0].clientY;
       console.log(e.touches[0].clientY - this.y0);
-      ship.style.top = `${e.touches[0].clientY - this.y0}px`;
-      ship.style.left = `${e.touches[0].clientX - this.x0}px`;
-      /* yDelta = 395;
-      xDelta = 31;
-      if (ship.classList.contains('destroyer')) xDelta -= 12;
-      if (ship.classList.contains('cruisser')) xDelta += 14;
-      ship.style.left = `${x - xDelta}px`;
-      ship.style.top = `${y - yDelta}px`; */
+      this.ship.style.top = `${e.touches[0].clientY - this.y0}px`;
+      this.ship.style.left = `${e.touches[0].clientX - this.x0}px`;
     }
   }
   
@@ -67,8 +56,18 @@ export function DomShip() {
 
   this.showRotateShip = function (e) {
     this.hideAllRotateShips();
-    console.log(e.target.children[0]);
     e.target.children[0].classList.add('visible');
+  }
+
+  this.rotateShip = function (e) {
+    e.stopPropagation();
+    if (this.orientation === 'h') {
+      this.orientation = 'v';
+      this.ship.style.transform = 'rotate(90deg)';
+    } else if (this.orientation === 'v') {
+      this.orientation = 'h';
+      this.ship.style.transform = 'rotate(0deg)';
+    }
   }
 
 }
