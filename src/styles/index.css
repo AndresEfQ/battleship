@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+body {
+  overscroll-behavior: contain;
+}
+
 .player1 {
   height: 40vh;
   width: 100vw;
@@ -58,14 +62,19 @@ h1 {
   height: 2vh;
 }
 
-.battleship, .submarine {
+.battleship {
   width: 9.5vh;
   height: 3vh;
 }
 
+.submarine {
+  width: 9.5vh;
+  height: 2.3vh;
+}
+
 .destroyer {
-  width: 6vh;
-  height: 3vh;
+  width: 9vh;
+  height: 2.6vh;
 }
 
 .cruisser {

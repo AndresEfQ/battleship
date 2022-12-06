@@ -4,46 +4,147 @@ export function DomShip(ship) {
   this.orientation = 'h';
   this.x0;
   this.y0;
+  this.x;
+  this.y;
 
-  this.positionShip = function (e, coordinates, gameboard) {
-    let coordinatesArray = coordinates.split(',');
-    let [x, y] = coordinatesArray;
-    if (gameboard === 'gameboard1') {
+  // Correct cell for out of board ship positioning
+  this.positionShip = function (e, cell, gameboardId) {
+    let correctedCell;
+    let div;
 
+    // when the rotate button is active, the rotate img acts as the e.target, so it must be corrected
+    if (!e.target.classList.contains('ship-div')) {
+      div = e.target.parentNode.parentNode;
+    } else {
+      div = e.target;
     }
+    // Correct positions for horizontal orientations
+    if (this.orientation === 'h') {
+      if (div.classList.contains('cruisser')) {
+        if (this.x === '1' || this.x == '2') {
+          this.x = '1';
+          correctedCell = document.querySelectorAll(`[data-coordinates="3,${this.y}"]`)[gameboardId - 1];
+        } else if (this.x === '9' || this.x == '10') {
+          this.x = '6';
+          correctedCell = document.querySelectorAll(`[data-coordinates="8,${this.y}"]`)[gameboardId - 1];
+        } else {
+          this.x -= 2;
+          correctedCell = cell;
+        }
+      } else if (div.classList.contains('destroyer')) {
+        if (this.x === '1') {
+          correctedCell = document.querySelectorAll(`[data-coordinates="2,${this.y}"]`)[gameboardId - 1];
+        } else if (this.x === '10') {
+          this.x = '9';
+          correctedCell = cell;
+        } else {
+          correctedCell = cell;
+        }
+      } else {
+        if (this.x === '1') {
+          correctedCell = document.querySelectorAll(`[data-coordinates="2,${this.y}"]`)[gameboardId - 1];
+        } else if (this.x === '10') {
+          this.x = '8';
+          correctedCell = document.querySelectorAll(`[data-coordinates="9,${this.y}"]`)[gameboardId - 1];
+        } else {
+          this.x--;
+          correctedCell = cell;
+        }
+      }
+    } 
+
+    // Correct positions for vertical orientations
+    else {
+      if (div.classList.contains('cruisser')) {
+        if (this.y === '1' || this.y == '2') {
+          this.y = '1';
+          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},3"]`)[gameboardId - 1];
+        } else if (this.y === '9' || this.y == '10') {
+          this.y = '6';
+          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},8"]`)[gameboardId - 1];
+        } else {
+          this.y -= 2;
+          correctedCell = cell;
+        }
+      } else if (div.classList.contains('destroyer')) {
+        if (this.y === '1') {
+          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},2"]`)[gameboardId - 1];
+        } else if (this.y === '10') {
+          this.y = '9';
+          correctedCell = cell;
+        } else {
+          correctedCell = cell;
+        }
+      } else {
+        if (this.y === '1') {
+          this.y = '2';
+          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},2"]`)[gameboardId - 1];
+        } else if (this.y === '10') {
+          this.y = '9';
+          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},9"]`)[gameboardId - 1];
+        } else {
+          correctedCell = cell;
+          this.y--;
+        }
+      }
+    }
+
+    // Append the ship div to the correct cell and erase all position variables
+    correctedCell.appendChild(div);
+    ship.style.position = null;
+    ship.style.left = null;
+    ship.style.right = null;
+    ship.style.top = null;
+    ship.style.bottom = null;
+    this.x0 = null;
+    this.y0 = null;
   }
 
-  this.dragShip = function (e, gameboard) {
+  // Reset the ship's position
+  this.resetShip = function () {
+    this.ship.style.position = null;
+  }
+
+  /* 
+  *  Calculate the distance from origin to final touch for x and y and sets the img position variables
+  *  to those values, it gives the apearance of the img following the finger.
+  */  
+  this.dragShip = function (e, gameboardId) {
     this.hideAllRotateShips();
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
     this.ship.style.position = 'absolute';
     
-    if (gameboard === 'gameboard1') {
-      if (!this.x0) this.x0 = e.touches[0].clientX;
-      if (!this.y0) this.y0 = e.touches[0].clientY;
-      console.log(e.touches[0].clientY - this.y0);
-      this.ship.style.bottom = `${e.touches[0].clientY - this.y0}px`;
-      this.ship.style.right = `${e.touches[0].clientX - this.x0}px`;
+    if (gameboardId === '1') {
+      if (!this.x0) this.x0 = x;
+      if (!this.y0) this.y0 = y;
+      this.ship.style.right = `${x - this.x0}px`;
+      this.ship.style.bottom = `${y - this.y0}px`;
  
-    } else if (gameboard === 'gameboard2') {
-      if (!this.x0) this.x0 = e.touches[0].clientX;
-      if (!this.y0) this.y0 = e.touches[0].clientY;
-      console.log(e.touches[0].clientY - this.y0);
-      this.ship.style.top = `${e.touches[0].clientY - this.y0}px`;
-      this.ship.style.left = `${e.touches[0].clientX - this.x0}px`;
+    } else if (gameboardId === '2') {
+      if (!this.x0) this.x0 = x;
+      if (!this.y0) this.y0 = y;
+      this.ship.style.left = `${x - this.x0}px`;
+      this.ship.style.top = `${y - this.y0}px`;
     }
   }
   
-  this.dropShip = function (e, gameboard) {
+  /* 
+  * Sets x and y to the final dragging point (endtouch event) and calls positionShip() if it is inside
+  * the correct gameboard's grid. Otherwise, it resets the img position.
+  */ 
+  this.dropShip = function (e, gameboardId) {
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
     let cell;
-    if (document.elementFromPoint(x, y).classList.contains('cell')) {
+    if (document.elementFromPoint(x, y).classList.contains('cell') &&
+        document.elementFromPoint(x, y).classList.contains(gameboardId)) {
       cell = document.elementFromPoint(x, y);
       let coordinates = cell.dataset.coordinates;
-      /* console.log(e, x, y); */
-      this.positionShip(e, coordinates, gameboard)
+      [this.x, this.y] = coordinates.split(',');
+      this.positionShip(e, cell, gameboardId);
+    } else {
+      this.resetShip();
     }
   }
 
@@ -75,16 +176,3 @@ export function DomShip(ship) {
 export function DomCell() {
 
 }
-
-/* Event: x = 66
-          y = 19
-
-   Position: top = 225;
-             left = 240;
-
-  Event: x = 78
-         y = 15
-
-  Position: top = 234;
-            left = 250
-*/
