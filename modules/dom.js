@@ -7,7 +7,10 @@ export function DomShip(ship) {
   this.x;
   this.y;
 
-  // Correct cell for out of board ship positioning
+  /*
+  * Appends the img div to the correct board cell. The cell is corrected when it is too close to the
+  * borders causing a ship overflow. 
+  */
   this.positionShip = function (e, cell, gameboardId) {
     let correctedCell;
     let div;
@@ -18,6 +21,7 @@ export function DomShip(ship) {
     } else {
       div = e.target;
     }
+
     // Correct positions for horizontal orientations
     if (this.orientation === 'h') {
       if (div.classList.contains('cruisser')) {
@@ -120,13 +124,14 @@ export function DomShip(ship) {
       if (!this.y0) this.y0 = y;
       this.ship.style.right = `${x - this.x0}px`;
       this.ship.style.bottom = `${y - this.y0}px`;
- 
+      
     } else if (gameboardId === '2') {
       if (!this.x0) this.x0 = x;
       if (!this.y0) this.y0 = y;
       this.ship.style.left = `${x - this.x0}px`;
       this.ship.style.top = `${y - this.y0}px`;
     }
+    this.showCoordinates(x, y, gameboardId);
   }
   
   /* 
@@ -146,8 +151,9 @@ export function DomShip(ship) {
     } else {
       this.resetShip();
     }
+    this.hideCoordinates();
   }
-
+  
   this.hideAllRotateShips = function () {
     let rotateDivs = document.getElementsByClassName('rotate');
     for (let rotateDiv of rotateDivs) {
@@ -159,7 +165,7 @@ export function DomShip(ship) {
     this.hideAllRotateShips();
     e.target.children[0].classList.add('visible');
   }
-
+  
   this.rotateShip = function (e) {
     e.stopPropagation();
     if (this.orientation === 'h') {
@@ -170,9 +176,34 @@ export function DomShip(ship) {
       this.ship.style.transform = 'rotate(0deg)';
     }
   }
-
+  
+  this.showCoordinates = function(x, y, gameboardId) {
+    let columns = [null, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    let infoDiv = document.getElementById('pass');
+    let cell;
+    let coordinates;
+    if (document.elementFromPoint(x, y).classList.contains('cell') &&
+        document.elementFromPoint(x, y).classList.contains(gameboardId)) {
+      cell = document.elementFromPoint(x, y);
+    } else {
+      this.hideCoordinates();
+    }
+    if (cell) {
+      coordinates = cell.dataset.coordinates;
+      let [col, row] = coordinates.split(',');
+      infoDiv.classList.add('info');
+      infoDiv.textContent = `${columns[col]} , ${row}`;
+    }
+  }
+  
+  this.hideCoordinates = function() {
+    let infoDiv = document.getElementById('pass');
+    infoDiv.classList.remove('info');
+    infoDiv.textContent = 'Pass Device'
+  }
+  
 }
 
 export function DomCell() {
-
+  
 }
