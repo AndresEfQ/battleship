@@ -51,26 +51,26 @@ describe("factory should create a new gameboard correctly", () => {
 describe("gameboard should place ships at specific locations", () => {
   test("gameboard places a 3 length ship in coordinates 1,1 vertically", () => {
     const gameboard = new Gameboard();
-    const board = gameboard.placeShip(new Ship(3), [1,1]);
-    expect(board[0].coordinates).toEqual(['1,1', '1,2', '1,3']);
+    gameboard.placeShip(new Ship(3), [1,1]);
+    expect(gameboard.board[0].coordinates).toEqual(['1,1', '1,2', '1,3']);
   });
 
   test("gameboard places a 3 length ship in coordinates 5,5 vertically", () => {
     const gameboard = new Gameboard();
-    const board = gameboard.placeShip(new Ship(3), [5,5]);
-    expect(board[0].coordinates).toEqual(['5,5', '5,6', '5,7']);
+    gameboard.placeShip(new Ship(3), [5,5]);
+    expect(gameboard.board[0].coordinates).toEqual(['5,5', '5,6', '5,7']);
   });
 
   test("gameboard places a 3 length ship in coordinates 1,1 horizontally", () => {
     const gameboard = new Gameboard();
-    const board = gameboard.placeShip(new Ship(3), [1,1], "h");
-    expect(board[0].coordinates).toEqual(['1,1', '2,1', '3,1']);
+    gameboard.placeShip(new Ship(3), [1,1], "h");
+    expect(gameboard.board[0].coordinates).toEqual(['1,1', '2,1', '3,1']);
   });
 
   test("gameboard places a 3 length ship in coordinates 5,5 horizontally", () => {
     const gameboard = new Gameboard();
-    const board = gameboard.placeShip(new Ship(3), [5,5], "h");
-    expect(board[0].coordinates).toEqual(['5,5', '6,5', '7,5']);
+    gameboard.placeShip(new Ship(3), [5,5], "h");
+    expect(gameboard.board[0].coordinates).toEqual(['5,5', '6,5', '7,5']);
   });
 
   test("should throw an error if x coordinate is less than 0", () => {
@@ -105,14 +105,60 @@ describe("gameboard should place ships at specific locations", () => {
 
   test("place ship in last row", () => {
     const gameboard = new Gameboard(7);
-    const board = gameboard.placeShip(new Ship(3), [1,7], "h");
-    expect(board[0].coordinates).toEqual(['1,7', '2,7', '3,7']);
+    gameboard.placeShip(new Ship(3), [1,7], "h");
+    expect(gameboard.board[0].coordinates).toEqual(['1,7', '2,7', '3,7']);
   });
 
   test("place ship in last column", () => {
     const gameboard = new Gameboard(7);
-    const board = gameboard.placeShip(new Ship(3), [7,1], "v");
-    expect(board[0].coordinates).toEqual(['7,1', '7,2', '7,3']);
+    gameboard.placeShip(new Ship(3), [7,1], "v");
+    expect(gameboard.board[0].coordinates).toEqual(['7,1', '7,2', '7,3']);
+  });
+});
+
+describe("gameboard shouldn't place new ships if they collide", () => {
+
+  test("should reject a second ship which collides with the first one", () => {
+    const gameboard = new Gameboard(7);
+    gameboard.placeShip(new Ship(3), [1,1], "v");
+    expect(() => {
+      gameboard.placeShip(new Ship(3), [1,1], "h")
+    }).toThrow("ship placed over an existing ship");
+    expect(gameboard.board.length).toEqual(1);
+  });
+
+  test("should not reject a second ship if it doesn't collide", () => {
+    const gameboard = new Gameboard(7);
+    gameboard.placeShip(new Ship(3), [1,1], "v");
+    const board = gameboard.placeShip(new Ship(3), [2,2], "v");
+    expect(board.length).toEqual(2);
+  });
+
+  test("should reject a second ship if it collides with the first one in any cell", () => {
+    const gameboard = new Gameboard(7);
+    gameboard.placeShip(new Ship(3), [3,1], "v");
+    expect(() => {
+      gameboard.placeShip(new Ship(3), [1,3], "h")
+    }).toThrow("ship placed over an existing ship");
+    expect(gameboard.board.length).toEqual(1);
+  });
+});
+
+describe("gameboard should delete ships already in place", () => {
+
+  test("should delete a ship already placed", () => {
+    const gameboard = new Gameboard(7);
+    gameboard.placeShip(new Ship(3), [1,1], "v");
+    const board = gameboard.deleteShip([1,1]);
+    expect(board.length).toEqual(0);
+  });
+  
+  test("should only delete one ship already placed", () => {
+    const gameboard = new Gameboard(7);
+    gameboard.placeShip(new Ship(3), [1,1], "v");
+    gameboard.placeShip(new Ship(5), [2,2], "v");
+    const board = gameboard.deleteShip([1,1]);
+    expect(board.length).toEqual(1);
   });
 });
 

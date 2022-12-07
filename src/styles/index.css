@@ -6,6 +6,7 @@
 
 body {
   overscroll-behavior: contain;
+  overflow-y: hidden;
 }
 
 .player1 {
@@ -144,7 +145,6 @@ div.ship-div {
 
 .controls {
   position: absolute;
-  /* left: 50%; */
   top: 50%;
   transform: translate(0, -50%);
   width: 95%;

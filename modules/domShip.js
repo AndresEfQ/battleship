@@ -1,4 +1,6 @@
-export function DomShip(ship) {
+import Ship from "./ship";
+
+export default function DomShip(ship) {
 
   this.ship = ship;
   this.orientation = 'h';
@@ -6,18 +8,23 @@ export function DomShip(ship) {
   this.y0;
   this.x;
   this.y;
+  
+  if (ship.classList.contains('cruisser')) this.shipLength = 5;
+  else if (ship.classList.contains('destroyer')) this.shipLength = 2;
+  else this.shipLength = 3;
 
   /*
   * Appends the img div to the correct board cell. The cell is corrected when it is too close to the
   * borders causing a ship overflow. 
   */
-  this.positionShip = function (e, cell, gameboardId) {
+  this.positionShip = function (e, cell, gameboardId, gameboard) {
     let correctedCell;
     let div;
 
     // when the rotate button is active, the rotate img acts as the e.target, so it must be corrected
     if (!e.target.classList.contains('ship-div')) {
-      div = e.target.parentNode.parentNode;
+      this.resetShip();
+      return;
     } else {
       div = e.target;
     }
@@ -25,30 +32,30 @@ export function DomShip(ship) {
     // Correct positions for horizontal orientations
     if (this.orientation === 'h') {
       if (div.classList.contains('cruisser')) {
-        if (this.x === '1' || this.x == '2') {
-          this.x = '1';
+        if (this.x === 1 || this.x == 2) {
+          this.x = 1;
           correctedCell = document.querySelectorAll(`[data-coordinates="3,${this.y}"]`)[gameboardId - 1];
-        } else if (this.x === '9' || this.x == '10') {
-          this.x = '6';
+        } else if (this.x === 9 || this.x == 10) {
+          this.x = 6;
           correctedCell = document.querySelectorAll(`[data-coordinates="8,${this.y}"]`)[gameboardId - 1];
         } else {
           this.x -= 2;
           correctedCell = cell;
         }
       } else if (div.classList.contains('destroyer')) {
-        if (this.x === '1') {
+        if (this.x === 1) {
           correctedCell = document.querySelectorAll(`[data-coordinates="2,${this.y}"]`)[gameboardId - 1];
-        } else if (this.x === '10') {
-          this.x = '9';
+        } else if (this.x === 10) {
+          this.x = 9;
           correctedCell = cell;
         } else {
           correctedCell = cell;
         }
       } else {
-        if (this.x === '1') {
+        if (this.x === 1) {
           correctedCell = document.querySelectorAll(`[data-coordinates="2,${this.y}"]`)[gameboardId - 1];
-        } else if (this.x === '10') {
-          this.x = '8';
+        } else if (this.x === 10) {
+          this.x = 9;
           correctedCell = document.querySelectorAll(`[data-coordinates="9,${this.y}"]`)[gameboardId - 1];
         } else {
           this.x--;
@@ -60,31 +67,31 @@ export function DomShip(ship) {
     // Correct positions for vertical orientations
     else {
       if (div.classList.contains('cruisser')) {
-        if (this.y === '1' || this.y == '2') {
-          this.y = '1';
+        if (this.y === 1 || this.y == 2) {
+          this.y = 1;
           correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},3"]`)[gameboardId - 1];
-        } else if (this.y === '9' || this.y == '10') {
-          this.y = '6';
+        } else if (this.y === 9 || this.y == 10) {
+          this.y = 6;
           correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},8"]`)[gameboardId - 1];
         } else {
           this.y -= 2;
           correctedCell = cell;
         }
       } else if (div.classList.contains('destroyer')) {
-        if (this.y === '1') {
+        if (this.y === 1) {
           correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},2"]`)[gameboardId - 1];
-        } else if (this.y === '10') {
-          this.y = '9';
+        } else if (this.y === 10) {
+          this.y = 9;
           correctedCell = cell;
         } else {
           correctedCell = cell;
         }
       } else {
-        if (this.y === '1') {
-          this.y = '2';
+        if (this.y === 1) {
+          this.y = 2;
           correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},2"]`)[gameboardId - 1];
-        } else if (this.y === '10') {
-          this.y = '9';
+        } else if (this.y === 10) {
+          this.y = 9;
           correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},9"]`)[gameboardId - 1];
         } else {
           correctedCell = cell;
@@ -92,7 +99,21 @@ export function DomShip(ship) {
         }
       }
     }
-
+    console.log(this.x, this.y);
+    try {
+      gameboard.placeShip(new Ship(this.shipLength), [this.x, this.y], this.orientation);
+    } catch (error) {
+      console.log(error);
+      console.log('error thrown')
+      this.showMessage(error);
+      this.resetShip();
+      return;
+    }
+    console.log(gameboard.board);
+  /*   if (!ans) {
+      this.resetShip();
+      return;
+    } */
     // Append the ship div to the correct cell and erase all position variables
     correctedCell.appendChild(div);
     ship.style.position = null;
@@ -102,6 +123,7 @@ export function DomShip(ship) {
     ship.style.bottom = null;
     this.x0 = null;
     this.y0 = null;
+    console.log(gameboard.board);
   }
 
   // Reset the ship's position
@@ -138,7 +160,7 @@ export function DomShip(ship) {
   * Sets x and y to the final dragging point (endtouch event) and calls positionShip() if it is inside
   * the correct gameboard's grid. Otherwise, it resets the img position.
   */ 
-  this.dropShip = function (e, gameboardId) {
+  this.dropShip = function (e, gameboardId, gameboard) {
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
     let cell;
@@ -146,8 +168,10 @@ export function DomShip(ship) {
         document.elementFromPoint(x, y).classList.contains(gameboardId)) {
       cell = document.elementFromPoint(x, y);
       let coordinates = cell.dataset.coordinates;
-      [this.x, this.y] = coordinates.split(',');
-      this.positionShip(e, cell, gameboardId);
+      let [row, col] = coordinates.split(',');
+      this.x = parseInt(row);
+      this.y = parseInt(col);
+      this.positionShip(e, cell, gameboardId, gameboard);
     } else {
       this.resetShip();
     }
@@ -195,15 +219,17 @@ export function DomShip(ship) {
       infoDiv.textContent = `${columns[col]} , ${row}`;
     }
   }
+
+  this.showMessage = function(message) {
+    let infoDiv = document.getElementById('pass');
+    infoDiv.classList.add('info');
+    infoDiv.textContent = message;
+  }
   
   this.hideCoordinates = function() {
     let infoDiv = document.getElementById('pass');
     infoDiv.classList.remove('info');
     infoDiv.textContent = 'Pass Device'
   }
-  
-}
-
-export function DomCell() {
   
 }
