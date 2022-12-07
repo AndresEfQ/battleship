@@ -104,8 +104,6 @@ export default function DomShip(ship) {
       gameboard.placeShip(new Ship(this.shipLength), [this.x, this.y], this.orientation);
     } catch (error) {
       console.log(error);
-      console.log('error thrown')
-      this.showMessage(error);
       this.resetShip();
       return;
     }
@@ -218,12 +216,6 @@ export default function DomShip(ship) {
       infoDiv.classList.add('info');
       infoDiv.textContent = `${columns[col]} , ${row}`;
     }
-  }
-
-  this.showMessage = function(message) {
-    let infoDiv = document.getElementById('pass');
-    infoDiv.classList.add('info');
-    infoDiv.textContent = message;
   }
   
   this.hideCoordinates = function() {
