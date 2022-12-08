@@ -13,13 +13,13 @@ export default function Gameboard(size) {
     placedShip.ship = ship;
     placedShip.coordinates = [];
     if (direction === "v") {
-      if (y + length > size) throw new Error("ship placed outside board")
+      if (y + length >  size + 1) throw new Error("ship placed outside board")
       for (let i = 0; i < length; i++) {
         placedShip.coordinates.push([x, y + i].join(','));
       }
       if (this.shipsCollide(placedShip)) throw new Error("ship placed over an existing ship");
     } else if (direction === "h") {
-      if (x + length > size) throw new Error("ship placed outside board")
+      if (x + length >  size + 1) throw new Error("ship placed outside board")
       for (let i = 0; i < length; i++) {
         placedShip.coordinates.push([x + i, y].join(','));
       }
@@ -42,7 +42,7 @@ export default function Gameboard(size) {
   }
 
   this.deleteShip = function (coordinates) {
-    return this.board.filter((ship) => {
+    this.board = this.board.filter((ship) => {
       return !ship.coordinates.some((cell) => {
         return cell === coordinates.join(',');
       });

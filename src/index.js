@@ -25,15 +25,21 @@ for (let shipDiv of shipDivs) {
   let domShip = new DomShip(shipImg);
   let rotateButton = shipDiv.children[0];
   if (shipDiv.classList.contains('1')) {
-    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '1'));
+    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '1', gameboard1));
     shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, '1', gameboard1));
   } else if (shipDiv.classList.contains('2')) {
-    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '2'));
+    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '2', gameboard2));
     shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, '2', gameboard2));
   }
   // let gameboardId = shipDiv.classList.contains('1') ? '1': '2';
   // let gameboard = document.getElementById(gameboardId);
-  shipDiv.addEventListener('touch', (e) => domShip.showRotateShip(e));
+  shipDiv.addEventListener('touch', (e) => {
+    if (domShip.showRotateShip()) {
+      domShip.showRotateShip(e); 
+    } else {
+      return;
+    }
+  });
   shipDiv.addEventListener('click', (e) => domShip.showRotateShip(e));
   rotateButton.addEventListener('touch', (e) => domShip.rotateShip(e));
   rotateButton.addEventListener('click', (e) => domShip.rotateShip(e));

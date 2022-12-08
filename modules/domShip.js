@@ -18,6 +18,10 @@ export default function DomShip(ship) {
   * borders causing a ship overflow. 
   */
   this.positionShip = function (e, cell, gameboardId, gameboard) {
+    const coordinates = cell.dataset.coordinates;
+    const [row, col] = coordinates.split(',');
+    let xCoord = parseInt(row);
+    let yCoord = parseInt(col);
     let correctedCell;
     let div;
 
@@ -31,123 +35,87 @@ export default function DomShip(ship) {
 
     // Correct positions for horizontal orientations
     if (this.orientation === 'h') {
-      if (div.classList.contains('cruisser')) {
-        if (this.x === 1 || this.x == 2) {
-          this.x = 1;
-          correctedCell = document.querySelectorAll(`[data-coordinates="3,${this.y}"]`)[gameboardId - 1];
-        } else if (this.x === 9 || this.x == 10) {
-          this.x = 6;
-          correctedCell = document.querySelectorAll(`[data-coordinates="8,${this.y}"]`)[gameboardId - 1];
-        } else {
-          this.x -= 2;
-          correctedCell = cell;
-        }
-      } else if (div.classList.contains('destroyer')) {
-        if (this.x === 1) {
-          correctedCell = document.querySelectorAll(`[data-coordinates="2,${this.y}"]`)[gameboardId - 1];
-        } else if (this.x === 10) {
-          this.x = 9;
-          correctedCell = cell;
-        } else {
-          correctedCell = cell;
-        }
+      if (xCoord > 11 - this.shipLength) {
+        xCoord = 11 - this.shipLength;
+        correctedCell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[gameboardId - 1];
       } else {
-        if (this.x === 1) {
-          correctedCell = document.querySelectorAll(`[data-coordinates="2,${this.y}"]`)[gameboardId - 1];
-        } else if (this.x === 10) {
-          this.x = 9;
-          correctedCell = document.querySelectorAll(`[data-coordinates="9,${this.y}"]`)[gameboardId - 1];
-        } else {
-          this.x--;
-          correctedCell = cell;
-        }
+        correctedCell = cell;
       }
-    } 
-
+    }
+       
     // Correct positions for vertical orientations
     else {
-      if (div.classList.contains('cruisser')) {
-        if (this.y === 1 || this.y == 2) {
-          this.y = 1;
-          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},3"]`)[gameboardId - 1];
-        } else if (this.y === 9 || this.y == 10) {
-          this.y = 6;
-          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},8"]`)[gameboardId - 1];
-        } else {
-          this.y -= 2;
-          correctedCell = cell;
-        }
-      } else if (div.classList.contains('destroyer')) {
-        if (this.y === 1) {
-          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},2"]`)[gameboardId - 1];
-        } else if (this.y === 10) {
-          this.y = 9;
-          correctedCell = cell;
-        } else {
-          correctedCell = cell;
-        }
+      if (yCoord > 11 - this.shipLength) {
+        yCoord = 11 - this.shipLength;
+        correctedCell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[gameboardId - 1];
       } else {
-        if (this.y === 1) {
-          this.y = 2;
-          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},2"]`)[gameboardId - 1];
-        } else if (this.y === 10) {
-          this.y = 9;
-          correctedCell = document.querySelectorAll(`[data-coordinates="${this.x},9"]`)[gameboardId - 1];
-        } else {
-          correctedCell = cell;
-          this.y--;
-        }
+        correctedCell = cell;
       }
     }
-    console.log(this.x, this.y);
+
+    console.log(xCoord, yCoord);
     try {
-      gameboard.placeShip(new Ship(this.shipLength), [this.x, this.y], this.orientation);
+      gameboard.placeShip(new Ship(this.shipLength), [xCoord, yCoord], this.orientation);
     } catch (error) {
       console.log(error);
-      this.resetShip();
+      this.resetShip(gameboard);
       return;
     }
-    console.log(gameboard.board);
-  /*   if (!ans) {
-      this.resetShip();
-      return;
-    } */
-    // Append the ship div to the correct cell and erase all position variables
+    // Don't allow ship rotations when they have been placed in the board. It caused all kind of visual and logic problems
+    this.showRotateShip = function () {console.log('Rotation not allowed after placing a ship in the board')};
+
+    console.log('appending div');
     correctedCell.appendChild(div);
-    ship.style.position = null;
     ship.style.left = null;
     ship.style.right = null;
     ship.style.top = null;
     ship.style.bottom = null;
     this.x0 = null;
     this.y0 = null;
+    this.x = xCoord;
+    this.y = yCoord;
+    console.log(gameboard.board[0].coordinates);
     console.log(gameboard.board);
+    console.log(correctedCell);
   }
 
   // Reset the ship's position
-  this.resetShip = function () {
-    this.ship.style.position = null;
+  this.resetShip = function (gameboard) {
+    this.ship.style.left = null;
+    this.ship.style.right = null;
+    this.ship.style.top = null;
+    this.ship.style.bottom = null;
+    if (this.x || this.y) {
+      try {
+        gameboard.placeShip(new Ship(this.shipLength), [this.x, this.y], this.orientation);
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   /* 
-  *  Calculate the distance from origin to final touch for x and y and sets the img position variables
-  *  to those values, it gives the apearance of the img following the finger.
+  *  Calculate the distance from origin to final touch for x and y and sets the img position 
+  *  variables to those values, it gives the apearance of the img following the finger.
   */  
-  this.dragShip = function (e, gameboardId) {
+  this.dragShip = function (e, gameboardId, gameboard) {
     this.hideAllRotateShips();
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
     this.ship.style.position = 'absolute';
+
+    if (this.x || this.y) {
+      gameboard.deleteShip([this.x, this.y]);
+    }
+
+    if (!this.x0) this.x0 = x;
+    if (!this.y0) this.y0 = y;
     
     if (gameboardId === '1') {
-      if (!this.x0) this.x0 = x;
-      if (!this.y0) this.y0 = y;
       this.ship.style.right = `${x - this.x0}px`;
       this.ship.style.bottom = `${y - this.y0}px`;
       
     } else if (gameboardId === '2') {
-      if (!this.x0) this.x0 = x;
-      if (!this.y0) this.y0 = y;
       this.ship.style.left = `${x - this.x0}px`;
       this.ship.style.top = `${y - this.y0}px`;
     }
@@ -155,8 +123,8 @@ export default function DomShip(ship) {
   }
   
   /* 
-  * Sets x and y to the final dragging point (endtouch event) and calls positionShip() if it is inside
-  * the correct gameboard's grid. Otherwise, it resets the img position.
+  * Sets x and y to the final dragging point (endtouch event) and calls positionShip() if it is 
+  * inside the correct gameboard's grid. Otherwise, it resets the img position.
   */ 
   this.dropShip = function (e, gameboardId, gameboard) {
     let x = e.changedTouches[0].clientX;
@@ -165,17 +133,16 @@ export default function DomShip(ship) {
     if (document.elementFromPoint(x, y).classList.contains('cell') &&
         document.elementFromPoint(x, y).classList.contains(gameboardId)) {
       cell = document.elementFromPoint(x, y);
-      let coordinates = cell.dataset.coordinates;
-      let [row, col] = coordinates.split(',');
-      this.x = parseInt(row);
-      this.y = parseInt(col);
       this.positionShip(e, cell, gameboardId, gameboard);
     } else {
-      this.resetShip();
+      this.resetShip(gameboard);
     }
     this.hideCoordinates();
   }
-  
+
+  /* 
+  * Remove the visible class of all rotation divs
+  */
   this.hideAllRotateShips = function () {
     let rotateDivs = document.getElementsByClassName('rotate');
     for (let rotateDiv of rotateDivs) {
@@ -183,22 +150,38 @@ export default function DomShip(ship) {
     }
   }
 
+  /*
+  * Adds the visible class to the rotation div of the ship being touched
+  */
   this.showRotateShip = function (e) {
     this.hideAllRotateShips();
     e.target.children[0].classList.add('visible');
   }
   
+  /*
+  * Sets the transform style of the image to achieve a vertical or horizontal effect. When the ship
+  * is set to vertical, the div width is set to 1 cell distance to avoid displacements of the img
+  * when it's being dragged. hideAllRotateShips() is called to reduce the wrong target selection
+  * probability when the rotate button is active as the dragging event starts. 
+  */
   this.rotateShip = function (e) {
     e.stopPropagation();
     if (this.orientation === 'h') {
       this.orientation = 'v';
-      this.ship.style.transform = 'rotate(90deg)';
+      this.ship.style.transform = 'translate(3vh) rotate(90deg)';
+      this.ship.parentNode.style.width = '3vh';
+      this.hideAllRotateShips();
     } else if (this.orientation === 'v') {
       this.orientation = 'h';
-      this.ship.style.transform = 'rotate(0deg)';
+      this.ship.style.transform = null;
+      this.ship.parentNode.style.width = null;
+      this.hideAllRotateShips();
     }
   }
   
+  /*
+  * Transforms the middle button into an information div and reports the cell being touched.
+  */
   this.showCoordinates = function(x, y, gameboardId) {
     let columns = [null, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     let infoDiv = document.getElementById('pass');
@@ -218,6 +201,9 @@ export default function DomShip(ship) {
     }
   }
   
+  /*
+  * Transforms the middle button back into a button after being an information div.
+  */
   this.hideCoordinates = function() {
     let infoDiv = document.getElementById('pass');
     infoDiv.classList.remove('info');
