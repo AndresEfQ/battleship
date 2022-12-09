@@ -149,16 +149,16 @@ describe("gameboard should delete ships already in place", () => {
   test("should delete a ship already placed", () => {
     const gameboard = new Gameboard(7);
     gameboard.placeShip(new Ship(3), [1,1], "v");
-    const board = gameboard.deleteShip([1,1]);
-    expect(board.length).toEqual(0);
+    gameboard.deleteShip('1,1');
+    expect(gameboard.board.length).toEqual(0);
   });
   
   test("should only delete one ship already placed", () => {
     const gameboard = new Gameboard(7);
     gameboard.placeShip(new Ship(3), [1,1], "v");
     gameboard.placeShip(new Ship(5), [2,2], "v");
-    const board = gameboard.deleteShip([1,1]);
-    expect(board.length).toEqual(1);
+    gameboard.deleteShip('1,1');
+    expect(gameboard.board.length).toEqual(1);
   });
 });
 
@@ -310,6 +310,68 @@ describe("test gameloop logic", () => {
       new Game('whatever', 7);
     }).toThrow("invalid parameter");
   })
+});
+
+describe("reset game should delete all ships and all hits from the boards", () => {
+
+  test("should delete all ships from one board", () => {
+    const game = new Game('2p', 7);
+    game.gameboard1.board = [
+      {
+        coordinates: ['3,8', '4,8', '5,8'],
+        ship: {}
+      },
+      {
+        coordinates: ['4,10', '5,10'],
+        ship: {}
+      }
+    ];
+    game.resetGame();
+    expect(game.gameboard1.board).toEqual([]);
+  });
+
+  test("should delete all ships from both boards", () => {
+    const game = new Game('2p', 7);
+    game.gameboard1.board = [
+      {
+        coordinates: ['3,8', '4,8', '5,8'],
+        ship: {}
+      },
+      {
+        coordinates: ['4,10', '5,10'],
+        ship: {}
+      }
+    ];
+    game.gameboard2.board = [
+      {
+        coordinates: ['3,8', '4,8', '5,8'],
+        ship: {}
+      },
+      {
+        coordinates: ['4,10', '5,10'],
+        ship: {}
+      }
+    ];
+    game.resetGame();
+    expect(game.gameboard1.board).toEqual([]);
+    expect(game.gameboard2.board).toEqual([]);
+  });
+
+  test("should delete all hits from one board", () => {
+    const game = new Game('2p', 7);
+    game.gameboard1.moves.add('1,1').add('1,2').add('1,3');
+    game.resetGame();
+    expect(game.gameboard1.moves.size).toBe(0);
+  });
+
+  test("should delete all hits from both board", () => {
+    const game = new Game('2p', 7);
+    game.gameboard1.moves.add('1,1').add('1,2').add('1,3');
+    game.gameboard2.moves.add('1,1').add('1,2').add('1,3');
+    game.resetGame();
+    expect(game.gameboard1.moves.size).toBe(0);
+    expect(game.gameboard2.moves.size).toBe(0);
+  });
 });
 
 /* describe("dom interaction module placeShips function", () => {

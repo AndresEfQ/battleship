@@ -44,7 +44,7 @@ export default function Gameboard(size) {
   this.deleteShip = function (coordinates) {
     this.board = this.board.filter((ship) => {
       return !ship.coordinates.some((cell) => {
-        return cell === coordinates.join(',');
+        return cell === coordinates;
       });
     });
   }

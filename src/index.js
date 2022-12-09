@@ -2,18 +2,13 @@ import Ship from "../modules/ship";
 import Gameboard from "../modules/gameboard";
 import Player from "../modules/player";
 import DomShip from "../modules/domShip";
+import DomGameboard from "../modules/domGameboard";
 import "./styles/index.css"
 
 const grids = document.getElementsByClassName('grid');
 for (let i = 0; i < 2; i++) {
-  for (let j = 1; j <= 100; j++) {
-    let cell = document.createElement('div');
-    let x = j % 10 === 0 ? 10 : j % 10;
-    let y = Math.ceil(j / 10);
-    cell.dataset.coordinates = `${x},${y}`
-    cell.className = `cell ${i + 1}`;
-    grids[i].appendChild(cell);
-  }
+  const domGameboard = new DomGameboard();
+  domGameboard.buildGrid(grids[i], i);
 }
 
 const gameboard1 = new Gameboard(10);
@@ -21,8 +16,7 @@ const gameboard2 = new Gameboard(10);
 
 const shipDivs = document.getElementsByClassName('ship-div');
 for (let shipDiv of shipDivs) {
-  let shipImg = shipDiv.children[1];
-  let domShip = new DomShip(shipImg);
+  let domShip = new DomShip(shipDiv);
   let rotateButton = shipDiv.children[0];
   if (shipDiv.classList.contains('1')) {
     shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '1', gameboard1));
@@ -48,7 +42,20 @@ for (let shipDiv of shipDivs) {
 
 
 const button = document.getElementById('pass');
-button.addEventListener('click', () => alert('pass'));
+button.addEventListener('click', () => {
+  const allShips = [...document.getElementsByClassName('ship-div')];
+  const playerShips = allShips.filter((ship) => {
+    return ship.classList.contains('1')
+  });
+  playerShips.forEach((ship) => {
+    const domShip = new DomShip(ship);
+    let shipIsPositioned = domShip.randomizeShip(gameboard1, '1');
+    console.log(shipIsPositioned);
+    while (!shipIsPositioned) {
+      shipIsPositioned = domShip.randomizeShip(gameboard1, '1');
+    }
+  });
+});
 
 
 // testing

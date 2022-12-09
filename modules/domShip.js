@@ -3,6 +3,7 @@ import Ship from "./ship";
 export default function DomShip(ship) {
 
   this.ship = ship;
+  this.shipImg = ship.children[1];
   this.orientation = 'h';
   this.x0;
   this.y0;
@@ -32,7 +33,7 @@ export default function DomShip(ship) {
     } else {
       div = e.target;
     }
-
+    
     // Correct positions for horizontal orientations
     if (this.orientation === 'h') {
       if (xCoord > 11 - this.shipLength) {
@@ -59,17 +60,17 @@ export default function DomShip(ship) {
     } catch (error) {
       console.log(error);
       this.resetShip(gameboard);
-      return;
+      return 0;
     }
     // Don't allow ship rotations when they have been placed in the board. It caused all kind of visual and logic problems
     this.showRotateShip = function () {console.log('Rotation not allowed after placing a ship in the board')};
 
     console.log('appending div');
     correctedCell.appendChild(div);
-    ship.style.left = null;
-    ship.style.right = null;
-    ship.style.top = null;
-    ship.style.bottom = null;
+    this.shipImg.style.left = null;
+    this.shipImg.style.right = null;
+    this.shipImg.style.top = null;
+    this.shipImg.style.bottom = null;
     this.x0 = null;
     this.y0 = null;
     this.x = xCoord;
@@ -77,14 +78,15 @@ export default function DomShip(ship) {
     console.log(gameboard.board[0].coordinates);
     console.log(gameboard.board);
     console.log(correctedCell);
+    return 1
   }
 
   // Reset the ship's position
   this.resetShip = function (gameboard) {
-    this.ship.style.left = null;
-    this.ship.style.right = null;
-    this.ship.style.top = null;
-    this.ship.style.bottom = null;
+    this.shipImg.style.left = null;
+    this.shipImg.style.right = null;
+    this.shipImg.style.top = null;
+    this.shipImg.style.bottom = null;
     if (this.x || this.y) {
       try {
         gameboard.placeShip(new Ship(this.shipLength), [this.x, this.y], this.orientation);
@@ -102,23 +104,24 @@ export default function DomShip(ship) {
     this.hideAllRotateShips();
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
-    this.ship.style.position = 'absolute';
+    this.shipImg.style.position = 'absolute';
 
     if (this.x || this.y) {
-      gameboard.deleteShip([this.x, this.y]);
+      gameboard.deleteShip(`${[this.x, this.y]}`);
     }
 
     if (!this.x0) this.x0 = x;
     if (!this.y0) this.y0 = y;
     
     if (gameboardId === '1') {
-      this.ship.style.right = `${x - this.x0}px`;
-      this.ship.style.bottom = `${y - this.y0}px`;
+      this.shipImg.style.right = `${x - this.x0}px`;
+      this.shipImg.style.bottom = `${y - this.y0}px`;
       
     } else if (gameboardId === '2') {
-      this.ship.style.left = `${x - this.x0}px`;
-      this.ship.style.top = `${y - this.y0}px`;
+      this.shipImg.style.left = `${x - this.x0}px`;
+      this.shipImg.style.top = `${y - this.y0}px`;
     }
+    console.log(x,y);
     this.showCoordinates(x, y, gameboardId);
   }
   
@@ -168,18 +171,19 @@ export default function DomShip(ship) {
     e.stopPropagation();
     if (this.orientation === 'h') {
       this.orientation = 'v';
-      this.ship.style.transform = 'translate(3vh) rotate(90deg)';
-      this.ship.parentNode.style.width = '3vh';
+      this.shipImg.style.transform = 'translate(3vh) rotate(90deg)';
+      this.shipImg.parentNode.style.width = '3vh';
       this.hideAllRotateShips();
     } else if (this.orientation === 'v') {
       this.orientation = 'h';
-      this.ship.style.transform = null;
-      this.ship.parentNode.style.width = null;
+      this.shipImg.style.transform = null;
+      this.shipImg.parentNode.style.width = null;
       this.hideAllRotateShips();
     }
   }
   
   /*
+  * Could go to dom-board
   * Transforms the middle button into an information div and reports the cell being touched.
   */
   this.showCoordinates = function(x, y, gameboardId) {
@@ -202,12 +206,29 @@ export default function DomShip(ship) {
   }
   
   /*
+  * Could go to dom-board
   * Transforms the middle button back into a button after being an information div.
   */
   this.hideCoordinates = function() {
     let infoDiv = document.getElementById('pass');
     infoDiv.classList.remove('info');
     infoDiv.textContent = 'Pass Device'
+  }
+
+  this.randomizeShip = function (gameboard, gameboardId) {
+    const x = Math.floor(Math.random() * 10) + 1;
+    const y = Math.floor(Math.random() * 10) + 1;
+    const position = Math.floor(Math.random() * 2);
+    this.orientation = position === 0 ? 'h' : 'v';
+    if (this.orientation === 'v') {
+      this.shipImg.style.transform = 'translate(3vh) rotate(90deg)';
+      this.shipImg.parentNode.style.width = '3vh';
+    }
+    this.shipImg.style.position = "absolute";
+    const cell = document.querySelectorAll(`[data-coordinates="${x},${y}"]`)[gameboardId - 1];
+    const e = {target: this.ship}
+    console.log(e);
+    return this.positionShip(e, cell, gameboardId, gameboard);
   }
   
 }
