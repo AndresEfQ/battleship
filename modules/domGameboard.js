@@ -9,7 +9,7 @@ export default function DomGameboard() {
       cell.className = `cell ${gameboardId + 1}`;
       grid.appendChild(cell);
     }
-  }
+  };
 
   this.resetAllShips = function (grid, ships, gameboardId) {
     const shipsDiv = document.getElementsByClassName('ships')[gameboardId - 1];
@@ -17,5 +17,23 @@ export default function DomGameboard() {
       shipsDiv.appendChild(ship)
     }
     this.buildGrid(grid, gameboardId);
+  };
+
+  this.placePlayerShips = function (playerId) {
+    const randomFinish = document.getElementById('pass');
+    const reset = document.getElementById('reset-game');
+    
+    reset.textContent = "Reset Ships";
+    randomFinish.textContent = "Randomize";
+    
   }
-}
+  
+  this.orientButtons = function (playerId) {
+    const controls = document.getElementsByClassName('controls');
+    if (playerId === '1') {
+      controls[0].style.transform = "rotate(180deg) translate(0, 50%)";
+    } else if (playerId === '2') {
+      controls[0].style.transform = "translate(0, 50%)";
+    }
+  }
+};

@@ -1,5 +1,6 @@
-export default function Player(type = 'human') {
-  this.type = type
+export default function Player(id, type = 'human') {
+  this.type = type;
+  this.id = id;
   this.enemyGameboard;
   this.ownGameboard;
   this.moves = new Set();
@@ -23,7 +24,17 @@ export default function Player(type = 'human') {
     this.enemyGameboard.receiveAttack(coordinates);
   }
 
-  this.placeShip = function (coordinates, lenght, direction) {
-    this.ownGameboard.placeShip(coordinates, lenght, direction);
+  this.placeShip = function (ship, coordinates, direction) {
+    this.ownGameboard.placeShip(ship, coordinates, direction);
   }
+
+  this.resetShips = function () {
+    this.ownGameboard.resetShips();
+  }
+
+  /* this.placeAllShips = function () {
+
+
+    return;
+  } */
 }

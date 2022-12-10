@@ -258,6 +258,16 @@ describe("players can take turns attacking the enemy gameboard", () => {
     expect(player.ownGameboard.board[0].coordinates).toEqual(['1,1', '1,2', '1,3']);
   });
 
+  test("player can reset ships in own gameboard", () => {
+    const player = new Player();
+    player.setGameboards(new Gameboard(7), new Gameboard(7));
+    player.placeShip(new Ship(3), [1,1]);
+    player.placeShip(new Ship(3), [2,1]);
+    player.placeShip(new Ship(3), [3,1]);
+    player.resetShips();
+    expect(player.ownGameboard.board.length).toBe(0);
+  });
+
   test("create 2 players with gameboards", () => {
     const player1 = new Player();
     const player2 = new Player();
@@ -272,14 +282,14 @@ describe("players can take turns attacking the enemy gameboard", () => {
   })
 
   test("computer player can attack enemy gameboard", () => {
-    const pcPlayer = new Player('computer');
+    const pcPlayer = new Player('2', 'computer');
     pcPlayer.setGameboards(new Gameboard(1), new Gameboard(1));
     pcPlayer.attack();
     expect(pcPlayer.enemyGameboard.moves.has('1,1')).toBe(true);
   });
 
   test("computer player doesn't repeat attacks and only attacks inside the enemy gameboard", () => {
-    const pcPlayer = new Player('computer');
+    const pcPlayer = new Player('2', 'computer');
     pcPlayer.setGameboards(new Gameboard(2), new Gameboard(2));
     pcPlayer.attack();
     pcPlayer.attack();

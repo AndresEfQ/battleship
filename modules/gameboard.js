@@ -27,7 +27,7 @@ export default function Gameboard(size) {
     }
     this.board.push(placedShip);
     return 'ok';
-  }
+  };
 
   
   // checks if any coordinate of the new ship (first some) is equal to any ocupied cell (third some) of any already placed ship (second some)
@@ -39,7 +39,7 @@ export default function Gameboard(size) {
         });
       });
     });
-  }
+  };
 
   this.deleteShip = function (coordinates) {
     this.board = this.board.filter((ship) => {
@@ -47,7 +47,7 @@ export default function Gameboard(size) {
         return cell === coordinates;
       });
     });
-  }
+  };
 
   this.receiveAttack = function (coordinates) {
     const [x, y] = coordinates;
@@ -67,11 +67,26 @@ export default function Gameboard(size) {
     }
     this.moves.add(coordinates.join(','));
     return "miss";
-  }
+  };
 
   this.allSunk = function () {
     return this.board.every((placedShip) => {
       return placedShip.ship.sunken;
     });
+  };
+
+  this.resetGameboard = function () {
+    this.resetMoves();
+    this.resetShips();
+  };
+
+  this.resetMoves = function () {
+    this.moves.forEach((hit) => this.moves.delete(hit));
+  };
+
+  this.resetShips = function () {
+    for (let ship of this.board) {
+      this.deleteShip(ship.coordinates[0]);
+    }
   }
 }

@@ -57,6 +57,8 @@ button.addEventListener('click', () => {
   });
 });
 
+const domGameboard = new DomGameboard();
+domGameboard.orientButtons('1');
 
 // testing
 /* const testCell = document.getElementById('test-grid').children[0];

@@ -5,10 +5,10 @@ import Player from "./player";
 export default function Game(mode, size) {
   if (mode !== '1p' && mode !== '2p') throw new Error('invalid parameter');
 
-  this.player1 = new Player();
+  this.player1 = new Player('1');
   this.player2 = mode === '2p' ? 
-    new Player() : 
-    new Player('computer');
+    new Player('2') : 
+    new Player('2', 'computer');
   this.gameboard1 = new Gameboard(size);
   this.gameboard2 = new Gameboard(size);
 
@@ -16,8 +16,8 @@ export default function Game(mode, size) {
   this.player2.setGameboards(this.gameboard2, this.gameboard1);
 
   this.resetGame = function () {
-    this.gameboard1.moves.forEach((hit) => this.gameboard1.moves.delete(hit));
-    this.gameboard2.moves.forEach((hit) => this.gameboard2.moves.delete(hit));
+    this.gameboard1.resetGameboard();
+    this.gameboard2.resetGameboard();
     for (let ship of this.gameboard1.board) {
       this.gameboard1.deleteShip(ship.coordinates[0]);
     }
