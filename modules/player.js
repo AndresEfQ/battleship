@@ -28,6 +28,10 @@ export default function Player(id, type = 'human') {
     this.ownGameboard.placeShip(ship, coordinates, direction);
   }
 
+  this.deleteShip = function (coordinates) {
+    this.ownGameboard.deleteShip(coordinates);
+  }
+
   this.resetShips = function () {
     this.ownGameboard.resetShips();
   }

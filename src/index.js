@@ -1,5 +1,6 @@
 import Ship from "../modules/ship";
 import Gameboard from "../modules/gameboard";
+import Game from "../modules/game";
 import Player from "../modules/player";
 import DomShip from "../modules/domShip";
 import DomGameboard from "../modules/domGameboard";
@@ -11,19 +12,18 @@ for (let i = 0; i < 2; i++) {
   domGameboard.buildGrid(grids[i], i);
 }
 
-const gameboard1 = new Gameboard(10);
-const gameboard2 = new Gameboard(10);
+const game = new Game('1p', 10);
 
 const shipDivs = document.getElementsByClassName('ship-div');
 for (let shipDiv of shipDivs) {
   let domShip = new DomShip(shipDiv);
   let rotateButton = shipDiv.children[0];
   if (shipDiv.classList.contains('1')) {
-    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '1', gameboard1));
-    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, '1', gameboard1));
+    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, game.player1));
+    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, game.player1));
   } else if (shipDiv.classList.contains('2')) {
-    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '2', gameboard2));
-    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, '2', gameboard2));
+    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, game.player2));
+    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, game.player2));
   }
   // let gameboardId = shipDiv.classList.contains('1') ? '1': '2';
   // let gameboard = document.getElementById(gameboardId);
@@ -49,10 +49,10 @@ button.addEventListener('click', () => {
   });
   playerShips.forEach((ship) => {
     const domShip = new DomShip(ship);
-    let shipIsPositioned = domShip.randomizeShip(gameboard1, '1');
+    let shipIsPositioned = domShip.randomizeShip(game.player1);
     console.log(shipIsPositioned);
     while (!shipIsPositioned) {
-      shipIsPositioned = domShip.randomizeShip(gameboard1, '1');
+      shipIsPositioned = domShip.randomizeShip(game.player1);
     }
   });
 });

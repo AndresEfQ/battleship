@@ -18,7 +18,9 @@ export default function DomShip(ship) {
   * Appends the img div to the correct board cell. The cell is corrected when it is too close to the
   * borders causing a ship overflow. 
   */
-  this.positionShip = function (e, cell, gameboardId, gameboard) {
+  this.positionShip = function (e, cell, player) {
+    const gameboardId = player.id;
+    const gameboard = player.ownGameboard;
     const coordinates = cell.dataset.coordinates;
     const [row, col] = coordinates.split(',');
     let xCoord = parseInt(row);
@@ -56,10 +58,10 @@ export default function DomShip(ship) {
 
     console.log(xCoord, yCoord);
     try {
-      gameboard.placeShip(new Ship(this.shipLength), [xCoord, yCoord], this.orientation);
+      player.placeShip(new Ship(this.shipLength), [xCoord, yCoord], this.orientation);
     } catch (error) {
       console.log(error);
-      this.resetShip(gameboard);
+      this.resetShip(player);
       return 0;
     }
     // Don't allow ship rotations when they have been placed in the board. It caused all kind of visual and logic problems
@@ -82,14 +84,14 @@ export default function DomShip(ship) {
   }
 
   // Reset the ship's position
-  this.resetShip = function (gameboard) {
+  this.resetShip = function (player) {
     this.shipImg.style.left = null;
     this.shipImg.style.right = null;
     this.shipImg.style.top = null;
     this.shipImg.style.bottom = null;
     if (this.x || this.y) {
       try {
-        gameboard.placeShip(new Ship(this.shipLength), [this.x, this.y], this.orientation);
+        player.placeShip(new Ship(this.shipLength), [this.x, this.y], this.orientation);
       } catch (error) {
         console.log(error)
       }
@@ -100,45 +102,45 @@ export default function DomShip(ship) {
   *  Calculate the distance from origin to final touch for x and y and sets the img position 
   *  variables to those values, it gives the apearance of the img following the finger.
   */  
-  this.dragShip = function (e, gameboardId, gameboard) {
+  this.dragShip = function (e, player) {
     this.hideAllRotateShips();
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
     this.shipImg.style.position = 'absolute';
 
     if (this.x || this.y) {
-      gameboard.deleteShip(`${[this.x, this.y]}`);
+      player.deleteShip(`${[this.x, this.y]}`);
     }
 
     if (!this.x0) this.x0 = x;
     if (!this.y0) this.y0 = y;
     
-    if (gameboardId === '1') {
+    if (player.id === '1') {
       this.shipImg.style.right = `${x - this.x0}px`;
       this.shipImg.style.bottom = `${y - this.y0}px`;
       
-    } else if (gameboardId === '2') {
+    } else if (player.id === '2') {
       this.shipImg.style.left = `${x - this.x0}px`;
       this.shipImg.style.top = `${y - this.y0}px`;
     }
     console.log(x,y);
-    this.showCoordinates(x, y, gameboardId);
+    this.showCoordinates(x, y, player.id);
   }
   
   /* 
   * Sets x and y to the final dragging point (endtouch event) and calls positionShip() if it is 
   * inside the correct gameboard's grid. Otherwise, it resets the img position.
   */ 
-  this.dropShip = function (e, gameboardId, gameboard) {
+  this.dropShip = function (e, player) {
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
     let cell;
     if (document.elementFromPoint(x, y).classList.contains('cell') &&
-        document.elementFromPoint(x, y).classList.contains(gameboardId)) {
+        document.elementFromPoint(x, y).classList.contains(player.id)) {
       cell = document.elementFromPoint(x, y);
-      this.positionShip(e, cell, gameboardId, gameboard);
+      this.positionShip(e, cell, player);
     } else {
-      this.resetShip(gameboard);
+      this.resetShip(player);
     }
     this.hideCoordinates();
   }
@@ -215,7 +217,7 @@ export default function DomShip(ship) {
     infoDiv.textContent = 'Pass Device'
   }
 
-  this.randomizeShip = function (gameboard, gameboardId) {
+  this.randomizeShip = function (player) {
     const x = Math.floor(Math.random() * 10) + 1;
     const y = Math.floor(Math.random() * 10) + 1;
     const position = Math.floor(Math.random() * 2);
@@ -225,10 +227,10 @@ export default function DomShip(ship) {
       this.shipImg.parentNode.style.width = '3vh';
     }
     this.shipImg.style.position = "absolute";
-    const cell = document.querySelectorAll(`[data-coordinates="${x},${y}"]`)[gameboardId - 1];
+    const cell = document.querySelectorAll(`[data-coordinates="${x},${y}"]`)[player.id - 1];
     const e = {target: this.ship}
     console.log(e);
-    return this.positionShip(e, cell, gameboardId, gameboard);
+    return this.positionShip(e, cell, player);
   }
   
 }

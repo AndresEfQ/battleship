@@ -86,11 +86,13 @@ h1 {
 div.ship-div {
   position: relative;
   display: inline-block;
+  outline: 1px solid red;
 }
 
 .ship-img {
   pointer-events: none;
   transform-origin: 0 0;
+  outline: 1px solid blue;
 } 
 
 .gameboard {

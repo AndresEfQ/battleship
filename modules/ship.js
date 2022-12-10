@@ -1,4 +1,5 @@
-export default function Ship(length) {
+export default function Ship(length, id) {
+  this.id = id;
   this.length = length;
   this.hits = 0;
   this.sunken = false;

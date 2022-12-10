@@ -1,3 +1,5 @@
+import DomShip from "./domShip";
+
 export default function DomGameboard() {
 
   this.buildGrid = function (grid, gameboardId) {
@@ -20,12 +22,11 @@ export default function DomGameboard() {
   };
 
   this.placePlayerShips = function (playerId) {
-    const randomFinish = document.getElementById('pass');
-    const reset = document.getElementById('reset-game');
+    
     
     reset.textContent = "Reset Ships";
     randomFinish.textContent = "Randomize";
-    
+
   }
   
   this.orientButtons = function (playerId) {
@@ -35,5 +36,13 @@ export default function DomGameboard() {
     } else if (playerId === '2') {
       controls[0].style.transform = "translate(0, 50%)";
     }
+  }
+
+  this.setControlsForPlayerPlaceShips = function (player) {
+    const playerId = player.id;
+    this.orientButtons(playerId);
+    const randomFinish = document.getElementById('pass');
+    randomFinish.addEventListener()
+    const reset = document.getElementById('reset-game');
   }
 };
