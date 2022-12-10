@@ -1,8 +1,8 @@
 import Ship from "./ship";
 
-export default function DomShip(ship) {
+export default function DomShip(ship, playerId) {
 
-  this.ship = ship;
+  this.ship = document.getElementsByClassName('');
   this.shipImg = ship.children[1];
   this.orientation = 'h';
   this.x0;
@@ -217,11 +217,7 @@ export default function DomShip(ship) {
     infoDiv.textContent = 'Pass Device'
   }
 
-  this.randomizeShip = function (player) {
-    const x = Math.floor(Math.random() * 10) + 1;
-    const y = Math.floor(Math.random() * 10) + 1;
-    const position = Math.floor(Math.random() * 2);
-    this.orientation = position === 0 ? 'h' : 'v';
+  this.preprocessPlaceShip = function (player) {
     if (this.orientation === 'v') {
       this.shipImg.style.transform = 'translate(3vh) rotate(90deg)';
       this.shipImg.parentNode.style.width = '3vh';
