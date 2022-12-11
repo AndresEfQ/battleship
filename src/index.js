@@ -3,16 +3,30 @@ import Gameboard from "../modules/gameboard";
 import Player from "../modules/player";
 import DomShip from "../modules/domShip";
 import DomGameboard from "../modules/domGameboard";
+import Game from "../modules/game";
 import "./styles/index.css"
 
+const domGameboard = new DomGameboard();
 const grids = document.getElementsByClassName('grid');
 for (let i = 0; i < 2; i++) {
-  const domGameboard = new DomGameboard();
   domGameboard.buildGrid(grids[i], i);
 }
 
-const gameboard1 = new Gameboard(10);
-const gameboard2 = new Gameboard(10);
+let game;
+const startGame = document.getElementById('start-game');
+const playModes = document.getElementsByClassName('play-mode');
+for (let button of playModes) {
+  button.addEventListener('touch', (e) => {
+    game = new Game(e.target.dataset.mode, 10);
+    startGame.classList.add('not-visible');
+  });
+  button.addEventListener('click', (e) => {
+    game = new Game(e.target.dataset.mode, 10);
+    startGame.classList.add('not-visible');
+  });
+}
+
+
 
 const shipDivs = document.getElementsByClassName('ship-div');
 for (let shipDiv of shipDivs) {
@@ -57,7 +71,6 @@ button.addEventListener('click', () => {
   });
 });
 
-const domGameboard = new DomGameboard();
 domGameboard.orientButtons('1');
 
 // testing
