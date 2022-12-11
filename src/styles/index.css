@@ -4,6 +4,35 @@
   box-sizing: border-box;
 }
 
+#start-game {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 40%;
+  background-color: rgb(255, 255, 255);
+  z-index: 5;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  text-align: center;
+  padding: 6vh;
+  border: 3px solid rgb(255, 0, 0);
+  border-radius: 20px;
+}
+
+#start-game > div {
+  display: flex;
+  gap: 4vh;
+}
+
+#start-game.not-visible {
+  display: none;
+}
+
 body {
   overscroll-behavior: contain;
   overflow: hidden;
@@ -86,11 +115,13 @@ h1 {
 div.ship-div {
   position: relative;
   display: inline-block;
+  outline: 1px solid red;
 }
 
 .ship-img {
   pointer-events: none;
   transform-origin: 0 0;
+  outline: 1px solid blue;
 } 
 
 .gameboard {
@@ -107,10 +138,6 @@ div.ship-div {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.touched-cell {
-  background-color: rgb(139, 139, 255);
 }
 
 .cellH {
@@ -155,7 +182,7 @@ div.ship-div {
   gap: 2vh;
 }
 
-.controls > * {
+button, .central {
   background-color: rgb(0, 114, 221);
   color: white;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
