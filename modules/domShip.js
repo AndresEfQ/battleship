@@ -1,11 +1,14 @@
 import Ship from "./ship";
 
-export default function DomShip(div, ship, player) {
+export default function DomShip(ship, player) {
 
   this.player = player;
   this.ship = ship;
   this.shipLength = ship.length;
-  this.shipDiv = div;
+  const shipDivs = document.getElementsByClassName('ship-div');
+  this.shipDiv = [...shipDivs].find((div) => {
+    return div.classList.contains(player.id) && div.classList.contains(ship.id);
+  });
   this.shipImg = this.shipDiv.children[1];
   this.orientation = 'h';
   this.x0;
@@ -17,42 +20,23 @@ export default function DomShip(div, ship, player) {
   * Appends the img div to the correct board cell. The cell is corrected when it is too close to the
   * borders causing a ship overflow. 
   */
-  this.positionShip = function (e, cell) {
-    const coordinates = cell.dataset.coordinates;
+  this.positionShip = function (coordinates) {
     const [row, col] = coordinates.split(',');
     let xCoord = parseInt(row);
     let yCoord = parseInt(col);
-    let correctedCell;
-    let div;
-
-    // when the rotate button is active, the rotate img acts as the e.target, so it must be corrected
-    if (!e.target.classList.contains('ship-div')) {
-      this.resetShip();
-      return;
-    } else {
-      div = e.target;
-    }
+    let cell;
     
     // Correct positions for horizontal orientations
-    if (this.orientation === 'h') {
-      if (xCoord > 11 - this.shipLength) {
-        xCoord = 11 - this.shipLength;
-        correctedCell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[this.player.id - 1];
-      } else {
-        correctedCell = cell;
-      }
+    if (this.orientation === 'h' && xCoord > 11 - this.shipLength) {
+      xCoord = 11 - this.shipLength;
     }
        
     // Correct positions for vertical orientations
-    else {
-      if (yCoord > 11 - this.shipLength) {
-        yCoord = 11 - this.shipLength;
-        correctedCell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[this.player.id - 1];
-      } else {
-        correctedCell = cell;
-      }
+    else if (this.orientation === 'v' && yCoord > 11 - this.shipLength) {
+      yCoord = 11 - this.shipLength;
     }
 
+    cell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[this.player.id - 1];
     console.log(xCoord, yCoord);
     try {
       player.placeShip(new Ship(this.shipLength), [xCoord, yCoord], this.orientation);
@@ -65,7 +49,7 @@ export default function DomShip(div, ship, player) {
     this.showRotateShip = function () {console.log('Rotation not allowed after placing a ship in the board')};
 
     console.log('appending div');
-    correctedCell.appendChild(div);
+    cell.appendChild(this.shipDiv);
     this.shipImg.style.left = null;
     this.shipImg.style.right = null;
     this.shipImg.style.top = null;
@@ -76,7 +60,7 @@ export default function DomShip(div, ship, player) {
     this.y = yCoord;
     /* console.log(gameboard.board[0].coordinates);
     console.log(gameboard.board); */
-    console.log(correctedCell);
+    console.log(cell);
     return 1
   }
 
@@ -135,7 +119,7 @@ export default function DomShip(div, ship, player) {
     if (document.elementFromPoint(x, y).classList.contains('cell') &&
         document.elementFromPoint(x, y).classList.contains(player.id)) {
       cell = document.elementFromPoint(x, y);
-      this.positionShip(e, cell, player);
+      this.positionShip(cell.dataset.coordinates);
     } else {
       this.resetShip(player);
     }
@@ -214,16 +198,13 @@ export default function DomShip(div, ship, player) {
     infoDiv.textContent = 'Pass Device'
   }
 
-  this.preprocessPlaceShip = function (player) {
-    if (this.orientation === 'v') {
+  this.placeShip = function (coordinates, direction) {
+    if (direction === 'v') {
       this.shipImg.style.transform = 'translate(3vh) rotate(90deg)';
       this.shipImg.parentNode.style.width = '3vh';
     }
     this.shipImg.style.position = "absolute";
-    const cell = document.querySelectorAll(`[data-coordinates="${x},${y}"]`)[player.id - 1];
-    const e = {target: this.ship}
-    console.log(e);
-    return this.positionShip(e, cell, player);
+    return this.positionShip(coordinates);
   }
   
 }

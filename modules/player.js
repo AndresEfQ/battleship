@@ -34,7 +34,13 @@ export default function Player(id, type = 'human') {
   }
 
   this.placeShip = function (ship, coordinates, direction) {
-    this.ownGameboard.placeShip(ship, coordinates, direction);
+    try {
+      this.ownGameboard.placeShip(ship, coordinates, direction);
+      return 1;
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
   }
 
   this.deleteShip = function (coordinates) {
@@ -47,14 +53,20 @@ export default function Player(id, type = 'human') {
 
   this.randomizeShips = function () {
     for (let ship of this.ships) {
-      const x = Math.floor(Math.random() * 10) + 1;
-      const y = Math.floor(Math.random() * 10) + 1;
-      const position = Math.floor(Math.random() * 2);
-      const direction = position === 0 ? 'h' : 'v';
-      let placedShip = this.placeShip(ship, [x,y], direction);
+      let placedShip;
+      let x;
+      let y;
+      let direction;
       while (!placedShip) {
+        x = Math.floor(Math.random() * 10) + 1;
+        y = Math.floor(Math.random() * 10) + 1;
+        const position = Math.floor(Math.random() * 2);
+        direction = position === 0 ? 'h' : 'v';
         placedShip = this.placeShip(ship, [x,y], direction);
+        console.log(placedShip, this.ownGameboard.board);
       }
+      const domShip = new DomShip(ship, this);
+      domShip.placeShip(`${x},${y}`, direction);
     }
   }
 

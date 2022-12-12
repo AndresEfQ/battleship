@@ -48,8 +48,7 @@ function setGame(game) {
     let shipDiv = [...shipDivs].find((div) => {
       return div.classList.contains('1') && div.classList.contains(ship.id);
     });
-    console.log(shipDiv)
-    let domShip = new DomShip(shipDiv, ship, game.player1);
+    let domShip = new DomShip(ship, game.player1);
     let rotateButton = shipDiv.children[0];
     shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, game.player1));
     shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, game.player1));
@@ -63,8 +62,7 @@ function setGame(game) {
     let shipDiv = [...shipDivs].find((div) => {
       return div.classList.contains('2') && div.classList.contains(ship.id);
     });
-    console.log(shipDiv)
-    let domShip = new DomShip(shipDiv, ship, game.player2);
+    let domShip = new DomShip(ship, game.player2);
     let rotateButton = shipDiv.children[0];
     shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, game.player2));
     shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, game.player2));
