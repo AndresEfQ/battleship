@@ -6,10 +6,17 @@ import DomGameboard from "../modules/domGameboard";
 import Game from "../modules/game";
 import "./styles/index.css"
 
-const domGameboard = new DomGameboard();
+
 const grids = document.getElementsByClassName('grid');
 for (let i = 0; i < 2; i++) {
-  domGameboard.buildGrid(grids[i], i);
+  for (let j = 1; j <= 100; j++) {
+    let cell = document.createElement('div');
+    let x = j % 10 === 0 ? 10 : j % 10;
+    let y = Math.ceil(j / 10);
+    cell.dataset.coordinates = `${x},${y}`
+    cell.className = `cell ${i + 1}`;
+    grids[i].appendChild(cell);
+  }
 }
 
 let game;
@@ -19,43 +26,60 @@ for (let button of playModes) {
   button.addEventListener('touch', (e) => {
     game = new Game(e.target.dataset.mode, 10);
     startGame.classList.add('not-visible');
+    setGame(game);
   });
   button.addEventListener('click', (e) => {
     game = new Game(e.target.dataset.mode, 10);
     startGame.classList.add('not-visible');
+    setGame(game);
   });
 }
 
+const newGameButton = document.getElementById('new-game');
+newGameButton.addEventListener('touch', () => startGame.classList.remove('not-visible'));
+newGameButton.addEventListener('click', () => startGame.classList.remove('not-visible'));
 
+function setGame(game) {
+  const shipDivs = document.getElementsByClassName('ship-div');
+  let domGameboard1 = new DomGameboard(game.player1);
+  let domGameboard2 = new DomGameboard(game.player2);
 
-const shipDivs = document.getElementsByClassName('ship-div');
-for (let shipDiv of shipDivs) {
-  let domShip = new DomShip(shipDiv);
-  let rotateButton = shipDiv.children[0];
-  if (shipDiv.classList.contains('1')) {
-    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '1', gameboard1));
-    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, '1', gameboard1));
-  } else if (shipDiv.classList.contains('2')) {
-    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, '2', gameboard2));
-    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, '2', gameboard2));
+  for (let ship of game.player1.ships) {
+    let shipDiv = [...shipDivs].find((div) => {
+      return div.classList.contains('1') && div.classList.contains(ship.id);
+    });
+    console.log(shipDiv)
+    let domShip = new DomShip(shipDiv, ship, game.player1);
+    let rotateButton = shipDiv.children[0];
+    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, game.player1));
+    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, game.player1));
+    shipDiv.addEventListener('touch', (e) => domShip.showRotateShip(e));
+    shipDiv.addEventListener('click', (e) => domShip.showRotateShip(e)); // Only for testind, might delete
+    rotateButton.addEventListener('touch', (e) => domShip.rotateShip(e));
+    rotateButton.addEventListener('click', (e) => domShip.rotateShip(e)); // Only for testind, might delete
+  
   }
-  // let gameboardId = shipDiv.classList.contains('1') ? '1': '2';
-  // let gameboard = document.getElementById(gameboardId);
-  shipDiv.addEventListener('touch', (e) => {
-    if (domShip.showRotateShip()) {
-      domShip.showRotateShip(e); 
-    } else {
-      return;
-    }
-  });
-  shipDiv.addEventListener('click', (e) => domShip.showRotateShip(e));
-  rotateButton.addEventListener('touch', (e) => domShip.rotateShip(e));
-  rotateButton.addEventListener('click', (e) => domShip.rotateShip(e));
+  for (let ship of game.player2.ships) {
+    let shipDiv = [...shipDivs].find((div) => {
+      return div.classList.contains('2') && div.classList.contains(ship.id);
+    });
+    console.log(shipDiv)
+    let domShip = new DomShip(shipDiv, ship, game.player2);
+    let rotateButton = shipDiv.children[0];
+    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, game.player2));
+    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, game.player2));
+    shipDiv.addEventListener('touch', (e) => domShip.showRotateShip(e));
+    shipDiv.addEventListener('click', (e) => domShip.showRotateShip(e)); // Only for testind, might delete
+    rotateButton.addEventListener('touch', (e) => domShip.rotateShip(e));
+    rotateButton.addEventListener('click', (e) => domShip.rotateShip(e)); // Only for testind, might delete
+  }
+  domGameboard1.orientButtons();
+  domGameboard1.setPlaceShipControls();
 }
 
 
 
-const button = document.getElementById('pass');
+/* const button = document.getElementById('pass');
 button.addEventListener('click', () => {
   const allShips = [...document.getElementsByClassName('ship-div')];
   const playerShips = allShips.filter((ship) => {
@@ -69,9 +93,8 @@ button.addEventListener('click', () => {
       shipIsPositioned = domShip.randomizeShip(gameboard1, '1');
     }
   });
-});
+}); */
 
-domGameboard.orientButtons('1');
 
 // testing
 /* const testCell = document.getElementById('test-grid').children[0];

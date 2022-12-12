@@ -1,9 +1,18 @@
+import DomShip from "./domShip";
+import Ship from "./ship";
+
 export default function Player(id, type = 'human') {
   this.type = type;
   this.id = id;
   this.enemyGameboard;
   this.ownGameboard;
   this.moves = new Set();
+  this.ships = [
+    new Ship(5, 'cruisser'),
+    new Ship(3, 'battleship'),
+    new Ship(3, 'submarine'),
+    new Ship(2, 'destroyer'),
+  ];
   
   this.setGameboards = function (ownGameboard, enemyGameboard) {
     this.ownGameboard = ownGameboard
@@ -28,8 +37,25 @@ export default function Player(id, type = 'human') {
     this.ownGameboard.placeShip(ship, coordinates, direction);
   }
 
+  this.deleteShip = function (coordinates) {
+    this.ownGameboard.deleteShip(coordinates);
+  }
+
   this.resetShips = function () {
     this.ownGameboard.resetShips();
+  }
+
+  this.randomizeShips = function () {
+    for (let ship of this.ships) {
+      const x = Math.floor(Math.random() * 10) + 1;
+      const y = Math.floor(Math.random() * 10) + 1;
+      const position = Math.floor(Math.random() * 2);
+      const direction = position === 0 ? 'h' : 'v';
+      let placedShip = this.placeShip(ship, [x,y], direction);
+      while (!placedShip) {
+        placedShip = this.placeShip(ship, [x,y], direction);
+      }
+    }
   }
 
   /* this.placeAllShips = function () {
