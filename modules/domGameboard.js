@@ -17,6 +17,34 @@ export default function DomGameboard(player) {
     }
   };
 
+  /* 
+  * Sets x and y to the final dragging point (endtouch event) and calls positionShip() if it is 
+  * inside the correct gameboard's grid. Otherwise, it resets the img position.
+  */ 
+  this.getShipLocation = function (e) {
+    let x = e.changedTouches[0].clientX;
+    let y = e.changedTouches[0].clientY;
+    let cell;
+    if (document.elementFromPoint(x, y).classList.contains('cell') &&
+        document.elementFromPoint(x, y).classList.contains(player.id)) {
+      cell = document.elementFromPoint(x, y);
+      this.hideCoordinates();
+      return cell.dataset.coordinates;
+    } 
+    // this.resetShip(player);
+    this.hideCoordinates();
+    return null;
+  }
+
+  /*
+  * Transforms the middle button back into a button after being an information div.
+  */
+   this.hideCoordinates = function() {
+    let infoDiv = document.getElementById('central');
+    infoDiv.classList.remove('info');
+    infoDiv.textContent = 'Pass Device'
+  }
+
   this.resetAllShips = function (grid, ships) {
     const shipsDiv = document.getElementsByClassName('ships')[this.player.id - 1];
     for (let ship of ships) {

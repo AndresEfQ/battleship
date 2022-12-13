@@ -30,6 +30,7 @@ for (let button of playModes) {
   });
   button.addEventListener('click', (e) => {
     game = new Game(e.target.dataset.mode, 10);
+    console.log(game);
     startGame.classList.add('not-visible');
     setGame(game);
   });
@@ -40,32 +41,25 @@ newGameButton.addEventListener('touch', () => startGame.classList.remove('not-vi
 newGameButton.addEventListener('click', () => startGame.classList.remove('not-visible'));
 
 function setGame(game) {
-  const shipDivs = document.getElementsByClassName('ship-div');
   let domGameboard1 = new DomGameboard(game.player1);
   let domGameboard2 = new DomGameboard(game.player2);
-
-  for (let ship of game.player1.ships) {
-    let shipDiv = [...shipDivs].find((div) => {
-      return div.classList.contains('1') && div.classList.contains(ship.id);
-    });
-    let domShip = new DomShip(ship, game.player1);
+  
+  for (let domShip of game.player1.domShips) {
+    let shipDiv = domShip.shipDiv;
     let rotateButton = shipDiv.children[0];
-    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, game.player1));
-    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, game.player1));
+    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e));
+    shipDiv.addEventListener('touchend', (e) => game.player1.placeShip(e));
     shipDiv.addEventListener('touch', (e) => domShip.showRotateShip(e));
     shipDiv.addEventListener('click', (e) => domShip.showRotateShip(e)); // Only for testind, might delete
     rotateButton.addEventListener('touch', (e) => domShip.rotateShip(e));
     rotateButton.addEventListener('click', (e) => domShip.rotateShip(e)); // Only for testind, might delete
   
   }
-  for (let ship of game.player2.ships) {
-    let shipDiv = [...shipDivs].find((div) => {
-      return div.classList.contains('2') && div.classList.contains(ship.id);
-    });
-    let domShip = new DomShip(ship, game.player2);
+  for (let domShip of game.player2.domShips) {
+    let shipDiv = domShip.shipDiv;
     let rotateButton = shipDiv.children[0];
-    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e, game.player2));
-    shipDiv.addEventListener('touchend', (e) => domShip.dropShip(e, game.player2));
+    shipDiv.addEventListener('touchmove', (e) => domShip.dragShip(e));
+    shipDiv.addEventListener('touchend', (e) => game.player2.placeShip(e));
     shipDiv.addEventListener('touch', (e) => domShip.showRotateShip(e));
     shipDiv.addEventListener('click', (e) => domShip.showRotateShip(e)); // Only for testind, might delete
     rotateButton.addEventListener('touch', (e) => domShip.rotateShip(e));

@@ -1,16 +1,15 @@
 import Ship from "./ship";
 
-export default function DomShip(ship, player) {
+export default function DomShip(ship, playerId) {
 
-  this.player = player;
   this.ship = ship;
   this.shipLength = ship.length;
   const shipDivs = document.getElementsByClassName('ship-div');
   this.shipDiv = [...shipDivs].find((div) => {
-    return div.classList.contains(player.id) && div.classList.contains(ship.id);
+    return div.classList.contains(playerId) && div.classList.contains(ship.id);
   });
   this.shipImg = this.shipDiv.children[1];
-  this.orientation = 'h';
+  this.direction = 'h';
   this.x0;
   this.y0;
   this.x;
@@ -24,31 +23,30 @@ export default function DomShip(ship, player) {
     const [row, col] = coordinates.split(',');
     let xCoord = parseInt(row);
     let yCoord = parseInt(col);
+    console.log({xCoord, yCoord});
     let cell;
     
-    // Correct positions for horizontal orientations
-    if (this.orientation === 'h' && xCoord > 11 - this.shipLength) {
+    // Correct positions for horizontal directions
+    if (this.direction === 'h' && xCoord > 11 - this.shipLength) {
       xCoord = 11 - this.shipLength;
     }
        
-    // Correct positions for vertical orientations
-    else if (this.orientation === 'v' && yCoord > 11 - this.shipLength) {
+    // Correct positions for vertical directions
+    else if (this.direction === 'v' && yCoord > 11 - this.shipLength) {
       yCoord = 11 - this.shipLength;
     }
 
-    cell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[this.player.id - 1];
-    console.log(xCoord, yCoord);
-    try {
-      player.placeShip(new Ship(this.shipLength), [xCoord, yCoord], this.orientation);
+    cell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[playerId - 1];
+    /* try {
+      player.placeShip(new Ship(this.shipLength), [xCoord, yCoord], this.direction);
     } catch (error) {
       console.log(error);
-      this.resetShip(player);
+      this.resetShip();
       return 0;
-    }
+    } */
     // Don't allow ship rotations when they have been placed in the board. It caused all kind of visual and logic problems
     this.showRotateShip = function () {console.log('Rotation not allowed after placing a ship in the board')};
 
-    console.log('appending div');
     cell.appendChild(this.shipDiv);
     this.shipImg.style.left = null;
     this.shipImg.style.right = null;
@@ -58,9 +56,6 @@ export default function DomShip(ship, player) {
     this.y0 = null;
     this.x = xCoord;
     this.y = yCoord;
-    /* console.log(gameboard.board[0].coordinates);
-    console.log(gameboard.board); */
-    console.log(cell);
     return 1
   }
 
@@ -72,7 +67,7 @@ export default function DomShip(ship, player) {
     this.shipImg.style.bottom = null;
     if (this.x || this.y) {
       try {
-        this.player.placeShip(new Ship(this.shipLength), [this.x, this.y], this.orientation);
+        this.player.placeShip(new Ship(this.shipLength), [this.x, this.y], this.direction);
       } catch (error) {
         console.log(error)
       }
@@ -84,47 +79,31 @@ export default function DomShip(ship, player) {
   *  variables to those values, it gives the apearance of the img following the finger.
   */  
   this.dragShip = function (e) {
+    console.log('dragging')
     this.hideAllRotateShips();
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
     this.shipImg.style.position = 'absolute';
 
-    if (this.x || this.y) {
+    /* if (this.x || this.y) {
       this.player.deleteShip(`${[this.x, this.y]}`);
-    }
+    } */
 
     if (!this.x0) this.x0 = x;
     if (!this.y0) this.y0 = y;
     
-    if (this.player.id === '1') {
+    if (playerId === '1') {
       this.shipImg.style.right = `${x - this.x0}px`;
       this.shipImg.style.bottom = `${y - this.y0}px`;
       
-    } else if (this.player.id === '2') {
+    } else if (playerId === '2') {
       this.shipImg.style.left = `${x - this.x0}px`;
       this.shipImg.style.top = `${y - this.y0}px`;
     }
-    console.log(x,y);
     this.showCoordinates(x, y);
   }
   
-  /* 
-  * Sets x and y to the final dragging point (endtouch event) and calls positionShip() if it is 
-  * inside the correct gameboard's grid. Otherwise, it resets the img position.
-  */ 
-  this.dropShip = function (e, player) {
-    let x = e.changedTouches[0].clientX;
-    let y = e.changedTouches[0].clientY;
-    let cell;
-    if (document.elementFromPoint(x, y).classList.contains('cell') &&
-        document.elementFromPoint(x, y).classList.contains(player.id)) {
-      cell = document.elementFromPoint(x, y);
-      this.positionShip(cell.dataset.coordinates);
-    } else {
-      this.resetShip(player);
-    }
-    this.hideCoordinates();
-  }
+  
 
   /* 
   * Remove the visible class of all rotation divs
@@ -152,17 +131,18 @@ export default function DomShip(ship, player) {
   */
   this.rotateShip = function (e) {
     e.stopPropagation();
-    if (this.orientation === 'h') {
-      this.orientation = 'v';
+    if (this.direction === 'h') {
+      this.direction = 'v';
       this.shipImg.style.transform = 'translate(3vh) rotate(90deg)';
       this.shipImg.parentNode.style.width = '3vh';
       this.hideAllRotateShips();
-    } else if (this.orientation === 'v') {
-      this.orientation = 'h';
+    } else if (this.direction === 'v') {
+      this.direction = 'h';
       this.shipImg.style.transform = null;
       this.shipImg.parentNode.style.width = null;
       this.hideAllRotateShips();
     }
+    return this.direction;
   }
   
   /*
@@ -175,10 +155,10 @@ export default function DomShip(ship, player) {
     let cell;
     let coordinates;
     if (document.elementFromPoint(x, y).classList.contains('cell') &&
-        document.elementFromPoint(x, y).classList.contains(this.player.id)) {
+        document.elementFromPoint(x, y).classList.contains(this.playerId)) {
       cell = document.elementFromPoint(x, y);
     } else {
-      this.hideCoordinates();
+      // this.hideCoordinates();
     }
     if (cell) {
       coordinates = cell.dataset.coordinates;
@@ -186,16 +166,6 @@ export default function DomShip(ship, player) {
       infoDiv.classList.add('info');
       infoDiv.textContent = `${columns[col]} , ${row}`;
     }
-  }
-  
-  /*
-  * Could go to dom-board
-  * Transforms the middle button back into a button after being an information div.
-  */
-  this.hideCoordinates = function() {
-    let infoDiv = document.getElementById('central');
-    infoDiv.classList.remove('info');
-    infoDiv.textContent = 'Pass Device'
   }
 
   this.placeShip = function (coordinates, direction) {

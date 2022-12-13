@@ -1,11 +1,13 @@
 import DomShip from "./domShip";
 import Ship from "./ship";
+import DomGameboard from "./domGameboard";
 
 export default function Player(id, type = 'human') {
   this.type = type;
   this.id = id;
-  this.enemyGameboard;
   this.ownGameboard;
+  this.enemyGameboard;
+  this.domGameboard = new DomGameboard(this);
   this.moves = new Set();
   this.ships = [
     new Ship(5, 'cruisser'),
@@ -13,7 +15,8 @@ export default function Player(id, type = 'human') {
     new Ship(3, 'submarine'),
     new Ship(2, 'destroyer'),
   ];
-  
+  this.domShips = this.ships.map((ship) => new DomShip(ship, this.id));
+
   this.setGameboards = function (ownGameboard, enemyGameboard) {
     this.ownGameboard = ownGameboard
     this.enemyGameboard = enemyGameboard;
@@ -33,9 +36,17 @@ export default function Player(id, type = 'human') {
     this.enemyGameboard.receiveAttack(coordinates);
   }
 
-  this.placeShip = function (ship, coordinates, direction) {
+  this.placeShip = function (e) {
+    let coordinates = this.domGameboard.getShipLocation(e);
+    let [x, y] = coordinates.split(',');
+    let xCoord = parseInt(x);
+    let yCoord = parseInt(y);
+    let domShip = this.domShips.find((domShip) => e.target.classList.contains(domShip.ship.id));
+    let direction = domShip.direction;
+    console.log({domShip, direction, coordinates});
     try {
-      this.ownGameboard.placeShip(ship, coordinates, direction);
+      this.ownGameboard.placeShip(domShip.ship, [xCoord, yCoord], direction);
+      domShip.positionShip(coordinates);
       return 1;
     } catch (error) {
       console.log(error);
@@ -63,7 +74,6 @@ export default function Player(id, type = 'human') {
         const position = Math.floor(Math.random() * 2);
         direction = position === 0 ? 'h' : 'v';
         placedShip = this.placeShip(ship, [x,y], direction);
-        console.log(placedShip, this.ownGameboard.board);
       }
       const domShip = new DomShip(ship, this);
       domShip.placeShip(`${x},${y}`, direction);
