@@ -55,7 +55,7 @@ describe("test ship's atributes and methods", () => {
   })
 });
 
-describe("factory should create a new gameboard correctly", () => {
+describe("gameboard factory should create a new gameboard correctly", () => {
 
     test("Creates new gameboard with empty board", () => {
     const gameboard = new Gameboard();
@@ -262,6 +262,45 @@ describe("gameboard should report if all ships have been sunk", () => {
   });
 });
 
+describe("gameboards should delete all moves and all ships when resetGameboard() is called", () => {
+
+  test("resetMoves() should delete all gameboard moves", () => {
+    const gameboard = new Gameboard(7);
+    gameboard.placeShip(new Ship(3), [1,1]);
+    gameboard.receiveAttack([1,1]);
+    gameboard.receiveAttack([2,1]);
+    gameboard.receiveAttack([3,1]);
+    expect(gameboard.moves.size).toBe(3);
+    gameboard.resetMoves();
+    expect(gameboard.moves.size).toBe(0);
+  });
+
+  test("resetShips() should delete all ships in the gameboard", () => {
+    const gameboard = new Gameboard(7);
+    gameboard.placeShip(new Ship(3), [1,1]);
+    gameboard.placeShip(new Ship(3), [2,1]);
+    gameboard.placeShip(new Ship(3), [3,1]);
+    expect(gameboard.board.length).toBe(3);
+    gameboard.resetShips();
+    expect(gameboard.board.length).toBe(0);
+  });
+
+  test("resetGameboard() should delete all moves and ships", () => {
+    const gameboard = new Gameboard(7);
+    gameboard.placeShip(new Ship(3), [1,1]);
+    gameboard.placeShip(new Ship(3), [2,1]);
+    gameboard.placeShip(new Ship(3), [3,1]);
+    gameboard.receiveAttack([1,1]);
+    gameboard.receiveAttack([2,1]);
+    gameboard.receiveAttack([3,1]);
+    expect(gameboard.board.length).toBe(3);
+    expect(gameboard.moves.size).toBe(3);
+    gameboard.resetGameboard();
+    expect(gameboard.board.length).toBe(0);
+    expect(gameboard.moves.size).toBe(0);
+  });
+});
+
 describe("players can take turns attacking the enemy gameboard", () => {
   
   test("player can attack enemy gameboard", () => {
@@ -286,7 +325,7 @@ describe("players can take turns attacking the enemy gameboard", () => {
     expect(player.ownGameboard.board.length).toBe(0);
   });
 
-  test("create 2 players with gameboards", () => {
+  test("setGameboards should correctly assign player gameboards", () => {
     const player1 = new Player(fakeDomGameboard, fakeDomShip, '1');
     const player2 = new Player(fakeDomGameboard, fakeDomShip, '2');
     const gameboard1 = new Gameboard(7);
@@ -320,9 +359,9 @@ describe("players can take turns attacking the enemy gameboard", () => {
   });
 });
 
-describe("test gameloop logic", () => {
+describe("test game logic", () => {
 
-  test("gameloop should create a new game with 2 players and gameboards", () => {
+  test("game should create a new game with 2 players and gameboards", () => {
     const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
     expect(game.player1.enemyGameboard).toBe(game.player2.ownGameboard);
     expect(game.player2.enemyGameboard).toBe(game.player1.ownGameboard);
