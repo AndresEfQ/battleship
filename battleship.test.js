@@ -3,6 +3,26 @@ import Gameboard from "./modules/gameboard";
 import Player from "./modules/player";
 import Game from "./modules/game";
 
+const fakeDomGameboard = function () {
+  this.getShipLocation = () => '1,1';
+  this.resetAllShips = () => null;
+}
+
+const fakeDomShip = function () {
+  this.ship = new Ship(3, 'battleship');
+  this.direction = 'v';
+  this.positionShip = () => null;
+  this.shipLength = 3;
+}
+
+const e = {
+  target: {
+    classList: {
+      contains: () => 'battleship'
+    }
+  }
+}
+
 describe("test ship's atributes and methods", () => {
 
   test("ship gets correct lenght", () => {
@@ -130,8 +150,8 @@ describe("gameboard shouldn't place new ships if they collide", () => {
   test("should not reject a second ship if it doesn't collide", () => {
     const gameboard = new Gameboard(7);
     gameboard.placeShip(new Ship(3), [1,1], "v");
-    const board = gameboard.placeShip(new Ship(3), [2,2], "v");
-    expect(board.length).toEqual(2);
+    gameboard.placeShip(new Ship(3), [2,2], "v");
+    expect(gameboard.board.length).toEqual(2);
   });
 
   test("should reject a second ship if it collides with the first one in any cell", () => {
@@ -245,32 +265,30 @@ describe("gameboard should report if all ships have been sunk", () => {
 describe("players can take turns attacking the enemy gameboard", () => {
   
   test("player can attack enemy gameboard", () => {
-    const player = new Player();
+    const player = new Player(fakeDomGameboard, fakeDomShip);
     player.setGameboards(new Gameboard(7), new Gameboard(7));
     player.attack([1,1]);
     expect(player.enemyGameboard.moves.has('1,1')).toBe(true);
   });
 
   test("player can place ships in own gameboard", () => {
-    const player = new Player();
+    const player = new Player(fakeDomGameboard, fakeDomShip);
     player.setGameboards(new Gameboard(7), new Gameboard(7));
-    player.placeShip(new Ship(3), [1,1]);
+    player.placeShip(e);
     expect(player.ownGameboard.board[0].coordinates).toEqual(['1,1', '1,2', '1,3']);
   });
 
   test("player can reset ships in own gameboard", () => {
-    const player = new Player();
+    const player = new Player(fakeDomGameboard, fakeDomShip);
     player.setGameboards(new Gameboard(7), new Gameboard(7));
-    player.placeShip(new Ship(3), [1,1]);
-    player.placeShip(new Ship(3), [2,1]);
-    player.placeShip(new Ship(3), [3,1]);
+    player.placeShip(e);
     player.resetShips();
     expect(player.ownGameboard.board.length).toBe(0);
   });
 
   test("create 2 players with gameboards", () => {
-    const player1 = new Player();
-    const player2 = new Player();
+    const player1 = new Player(fakeDomGameboard, fakeDomShip, '1');
+    const player2 = new Player(fakeDomGameboard, fakeDomShip, '2');
     const gameboard1 = new Gameboard(7);
     const gameboard2 = new Gameboard(7);
     player1.setGameboards(gameboard1, gameboard2);
@@ -282,14 +300,14 @@ describe("players can take turns attacking the enemy gameboard", () => {
   })
 
   test("computer player can attack enemy gameboard", () => {
-    const pcPlayer = new Player('2', 'computer');
+    const pcPlayer = new Player(fakeDomGameboard, fakeDomShip, '2', 'computer');
     pcPlayer.setGameboards(new Gameboard(1), new Gameboard(1));
     pcPlayer.attack();
     expect(pcPlayer.enemyGameboard.moves.has('1,1')).toBe(true);
   });
 
   test("computer player doesn't repeat attacks and only attacks inside the enemy gameboard", () => {
-    const pcPlayer = new Player('2', 'computer');
+    const pcPlayer = new Player(fakeDomGameboard, fakeDomShip, '2', 'computer');
     pcPlayer.setGameboards(new Gameboard(2), new Gameboard(2));
     pcPlayer.attack();
     pcPlayer.attack();
@@ -305,19 +323,19 @@ describe("players can take turns attacking the enemy gameboard", () => {
 describe("test gameloop logic", () => {
 
   test("gameloop should create a new game with 2 players and gameboards", () => {
-    const game = new Game('2p', 7);
+    const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
     expect(game.player1.enemyGameboard).toBe(game.player2.ownGameboard);
     expect(game.player2.enemyGameboard).toBe(game.player1.ownGameboard);
   });
 
   test("player 2 should be of type computer if mode is 1p", () => {
-    const game = new Game('1p', 7);
+    const game = new Game(fakeDomGameboard, fakeDomShip, '1p', 7);
     expect(game.player2.type).toBe('computer');
   });
 
   test("should throw error if game param is not 1p or 2p", () => {
     expect(() => {
-      new Game('whatever', 7);
+      new Game(fakeDomGameboard, fakeDomShip, 'whatever', 7);
     }).toThrow("invalid parameter");
   })
 });
@@ -325,7 +343,7 @@ describe("test gameloop logic", () => {
 describe("reset game should delete all ships and all hits from the boards", () => {
 
   test("should delete all ships from one board", () => {
-    const game = new Game('2p', 7);
+    const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
     game.gameboard1.board = [
       {
         coordinates: ['3,8', '4,8', '5,8'],
@@ -341,7 +359,7 @@ describe("reset game should delete all ships and all hits from the boards", () =
   });
 
   test("should delete all ships from both boards", () => {
-    const game = new Game('2p', 7);
+    const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
     game.gameboard1.board = [
       {
         coordinates: ['3,8', '4,8', '5,8'],
@@ -368,14 +386,14 @@ describe("reset game should delete all ships and all hits from the boards", () =
   });
 
   test("should delete all hits from one board", () => {
-    const game = new Game('2p', 7);
+    const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
     game.gameboard1.moves.add('1,1').add('1,2').add('1,3');
     game.resetGame();
     expect(game.gameboard1.moves.size).toBe(0);
   });
 
   test("should delete all hits from both board", () => {
-    const game = new Game('2p', 7);
+    const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
     game.gameboard1.moves.add('1,1').add('1,2').add('1,3');
     game.gameboard2.moves.add('1,1').add('1,2').add('1,3');
     game.resetGame();

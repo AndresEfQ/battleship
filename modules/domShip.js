@@ -23,18 +23,7 @@ export default function DomShip(ship, playerId) {
     const [row, col] = coordinates.split(',');
     let xCoord = parseInt(row);
     let yCoord = parseInt(col);
-    console.log({xCoord, yCoord});
     let cell;
-    
-    // Correct positions for horizontal directions
-    if (this.direction === 'h' && xCoord > 11 - this.shipLength) {
-      xCoord = 11 - this.shipLength;
-    }
-       
-    // Correct positions for vertical directions
-    else if (this.direction === 'v' && yCoord > 11 - this.shipLength) {
-      yCoord = 11 - this.shipLength;
-    }
 
     cell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[playerId - 1];
     /* try {
@@ -79,7 +68,6 @@ export default function DomShip(ship, playerId) {
   *  variables to those values, it gives the apearance of the img following the finger.
   */  
   this.dragShip = function (e) {
-    console.log('dragging')
     this.hideAllRotateShips();
     let x = e.changedTouches[0].clientX;
     let y = e.changedTouches[0].clientY;
@@ -145,6 +133,12 @@ export default function DomShip(ship, playerId) {
     return this.direction;
   }
   
+  this.resetShipImg = function () {
+    this.direction = 'h';
+    this.shipImg.style.transform = null;
+    this.shipImg.parentNode.style.width = null;
+  }
+  
   /*
   * Could go to dom-board
   * Transforms the middle button into an information div and reports the cell being touched.
@@ -155,7 +149,7 @@ export default function DomShip(ship, playerId) {
     let cell;
     let coordinates;
     if (document.elementFromPoint(x, y).classList.contains('cell') &&
-        document.elementFromPoint(x, y).classList.contains(this.playerId)) {
+        document.elementFromPoint(x, y).classList.contains(playerId)) {
       cell = document.elementFromPoint(x, y);
     } else {
       // this.hideCoordinates();

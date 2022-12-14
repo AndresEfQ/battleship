@@ -26,7 +26,6 @@ export default function Gameboard(size) {
       if (this.shipsCollide(placedShip)) throw new Error("ship placed over an existing ship");
     }
     this.board.push(placedShip);
-    return 'ok';
   };
 
   
@@ -85,8 +84,6 @@ export default function Gameboard(size) {
   };
 
   this.resetShips = function () {
-    for (let ship of this.board) {
-      this.deleteShip(ship.coordinates[0]);
-    }
+    this.board = [];
   }
 }

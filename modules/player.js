@@ -1,8 +1,6 @@
-import DomShip from "./domShip";
 import Ship from "./ship";
-import DomGameboard from "./domGameboard";
 
-export default function Player(id, type = 'human') {
+export default function Player(DomGameboard, DomShip, id, type = 'human') {
   this.type = type;
   this.id = id;
   this.ownGameboard;
@@ -42,8 +40,16 @@ export default function Player(id, type = 'human') {
     let xCoord = parseInt(x);
     let yCoord = parseInt(y);
     let domShip = this.domShips.find((domShip) => e.target.classList.contains(domShip.ship.id));
+    // Correct positions for horizontal directions
+    if (domShip.direction === 'h' && xCoord > 11 - domShip.shipLength) {
+      xCoord = 11 - domShip.shipLength;
+    }
+      
+    // Correct positions for vertical directions
+    else if (domShip.direction === 'v' && yCoord > 11 - domShip.shipLength) {
+      yCoord = 11 - domShip.shipLength;
+    }
     let direction = domShip.direction;
-    console.log({domShip, direction, coordinates});
     try {
       this.ownGameboard.placeShip(domShip.ship, [xCoord, yCoord], direction);
       domShip.positionShip(coordinates);
@@ -51,6 +57,8 @@ export default function Player(id, type = 'human') {
     } catch (error) {
       console.log(error);
       return 0;
+    } finally {
+      this.finishShipPlacement();
     }
   }
 
@@ -62,27 +70,54 @@ export default function Player(id, type = 'human') {
     this.ownGameboard.resetShips();
   }
 
+  this.resetAllShips = function () {
+    this.ownGameboard.resetShips();
+    this.domGameboard.resetAllShips();
+    this.domGameboard.setPlaceShipControls();
+    console.log(this.ownGameboard);
+  }
+
   this.randomizeShips = function () {
-    for (let ship of this.ships) {
+    console.log('randomize caller');
+    for (let domShip of this.domShips) {
       let placedShip;
       let x;
       let y;
       let direction;
+      let shipLength = domShip.shipLength;
       while (!placedShip) {
         x = Math.floor(Math.random() * 10) + 1;
         y = Math.floor(Math.random() * 10) + 1;
         const position = Math.floor(Math.random() * 2);
         direction = position === 0 ? 'h' : 'v';
-        placedShip = this.placeShip(ship, [x,y], direction);
+
+        // Correct positions for horizontal directions
+        if (direction === 'h' && x > 11 - shipLength) {
+          x = 11 - shipLength;
+        }
+          
+        // Correct positions for vertical directions
+        else if (direction === 'v' && y > 11 - shipLength) {
+          y = 11 - shipLength;
+        }
+        try {
+          this.ownGameboard.placeShip(domShip.ship, [x,y], direction);
+          placedShip = true;
+        } catch (error) {
+          console.log(error);
+        }
       }
-      const domShip = new DomShip(ship, this);
+      domShip.direction = direction;
       domShip.placeShip(`${x},${y}`, direction);
     }
+    this.domGameboard.setFinishShipPlacementControls();
+    console.log(this.ownGameboard);
+    return;
   }
 
-  /* this.placeAllShips = function () {
-
-
-    return;
-  } */
+  this.finishShipPlacement = function () {
+    if (this.ownGameboard.board.length === 4) {
+      this.domGameboard.setFinishShipPlacementControls();
+    }
+  }
 }

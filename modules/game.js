@@ -1,14 +1,13 @@
-import Ship from "./ship";
 import Gameboard from "./gameboard";
 import Player from "./player";
 
-export default function Game(mode, size) {
+export default function Game(DomGameboard, DomShip, mode, size) {
   if (mode !== '1p' && mode !== '2p') throw new Error('invalid parameter');
 
-  this.player1 = new Player('1');
+  this.player1 = new Player(DomGameboard, DomShip, '1');
   this.player2 = mode === '2p' ? 
-    new Player('2') : 
-    new Player('2', 'computer');
+    new Player(DomGameboard, DomShip, '2') : 
+    new Player(DomGameboard, DomShip, '2', 'computer');
   this.gameboard1 = new Gameboard(size);
   this.gameboard2 = new Gameboard(size);
 

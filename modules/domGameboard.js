@@ -5,15 +5,17 @@ export default function DomGameboard(player) {
   this.newGame = document.getElementById('new-game');
   this.central = document.getElementById('central');
   this.resetGame = document.getElementById('reset-game');
+  const grids = document.getElementsByClassName('grid');
+  this.grid = [...grids].find((grid) => grid.classList.contains(this.player.id));
 
-  this.buildGrid = function (grid) {
+  this.buildGrid = function () {
     for (let j = 1; j <= 100; j++) {
       let cell = document.createElement('div');
       let x = j % 10 === 0 ? 10 : j % 10;
       let y = Math.ceil(j / 10);
       cell.dataset.coordinates = `${x},${y}`
       cell.className = `cell ${this.player.id + 1}`;
-      grid.appendChild(cell);
+      this.grid.appendChild(cell);
     }
   };
 
@@ -42,15 +44,17 @@ export default function DomGameboard(player) {
    this.hideCoordinates = function() {
     let infoDiv = document.getElementById('central');
     infoDiv.classList.remove('info');
-    infoDiv.textContent = 'Pass Device'
+    infoDiv.textContent = 'Random'
   }
 
-  this.resetAllShips = function (grid, ships) {
+  this.resetAllShips = function () {
     const shipsDiv = document.getElementsByClassName('ships')[this.player.id - 1];
-    for (let ship of ships) {
-      shipsDiv.appendChild(ship)
+    for (let domShip of this.player.domShips) {
+      domShip.resetShipImg();
+      shipsDiv.appendChild(domShip.shipDiv)
     }
-    this.buildGrid(grid, gameboardId);
+    this.grid.innerHTML = '';
+    this.buildGrid();
   };
 
   this.placePlayerShips = function () {
@@ -70,12 +74,36 @@ export default function DomGameboard(player) {
     }
   }
 
+  this.passDevice = function () {
+    
+  }
+
+  const randomize = function () {
+    this.player.randomizeShips();
+  }
+
+  const resetShips = () => {
+    this.player.resetAllShips();
+  }
+
+  const passDevice = () => {
+    this.passDevice();
+  }
+
   this.setPlaceShipControls = function () {
-    this.central.addEventListener('touch', () => this.player.randomizeShips());
-    this.central.addEventListener('click', () => this.player.randomizeShips());
+    this.central.addEventListener('touch', randomize);
+    this.central.addEventListener('click', randomize);
     this.central.textContent = 'Random';
-    this.resetGame.addEventListener('touch', () => this.player.resetAllShips());
-    this.resetGame.addEventListener('click', () => this.player.resetAllShips());
+    this.resetGame.addEventListener('touch', resetShips);
+    this.resetGame.addEventListener('click', resetShips);
     this.resetGame.textContent = 'Reset Ships';
+  }
+
+  this.setFinishShipPlacementControls = function () {
+    this.central.removeEventListener('touch', randomize)
+    this.central.removeEventListener('click', randomize)
+    this.central.addEventListener('touch', passDevice);
+    this.central.addEventListener('click', passDevice);
+    this.central.textContent = 'Finish';
   }
 };

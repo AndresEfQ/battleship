@@ -1,9 +1,6 @@
-import Ship from "../modules/ship";
-import Gameboard from "../modules/gameboard";
-import Player from "../modules/player";
-import DomShip from "../modules/domShip";
-import DomGameboard from "../modules/domGameboard";
 import Game from "../modules/game";
+import DomGameboard from "../modules/domGameboard";
+import DomShip from "../modules/domShip";
 import "./styles/index.css"
 
 
@@ -24,12 +21,12 @@ const startGame = document.getElementById('start-game');
 const playModes = document.getElementsByClassName('play-mode');
 for (let button of playModes) {
   button.addEventListener('touch', (e) => {
-    game = new Game(e.target.dataset.mode, 10);
+    game = new Game(DomGameboard, DomShip, e.target.dataset.mode, 10);
     startGame.classList.add('not-visible');
     setGame(game);
   });
   button.addEventListener('click', (e) => {
-    game = new Game(e.target.dataset.mode, 10);
+    game = new Game(DomGameboard, DomShip, e.target.dataset.mode, 10);
     console.log(game);
     startGame.classList.add('not-visible');
     setGame(game);
@@ -68,27 +65,3 @@ function setGame(game) {
   domGameboard1.orientButtons();
   domGameboard1.setPlaceShipControls();
 }
-
-
-
-/* const button = document.getElementById('pass');
-button.addEventListener('click', () => {
-  const allShips = [...document.getElementsByClassName('ship-div')];
-  const playerShips = allShips.filter((ship) => {
-    return ship.classList.contains('1')
-  });
-  playerShips.forEach((ship) => {
-    const domShip = new DomShip(ship);
-    let shipIsPositioned = domShip.randomizeShip(gameboard1, '1');
-    console.log(shipIsPositioned);
-    while (!shipIsPositioned) {
-      shipIsPositioned = domShip.randomizeShip(gameboard1, '1');
-    }
-  });
-}); */
-
-
-// testing
-/* const testCell = document.getElementById('test-grid').children[0];
-const testDiv = document.getElementById('test-div-dr');
-testCell.appendChild(testDiv); */
