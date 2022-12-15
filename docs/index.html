@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="container" id="testGameboard">
-    <div id="start-game">
+    <div class="start-game">
       <h1>WELCOME TO BATTLESHIP</h1>
       <h4>Do you want to play with a friend or by yourself?</h4>
       <div>
@@ -17,6 +17,7 @@
         <button class="play-mode" data-mode="2p">Play with a friend</button>
       </div>
     </div>
+    <div class="hide-player p1"></div>
     <div class="player1">
       <div class="gameboard" id="gameboard1">
         <div class="columnHeaders">
@@ -70,10 +71,14 @@
 
     <div class="controls">
       <button id="new-game">New Game</button>
-      <div id="central" class="central">Pass Device</div>
-      <button id="reset-game">Reset Game</button>
+      <div id="pass" class="central not-visible">Pass Device</div>
+      <div id="random" class="central">Random</div>
+      <div id="finish" class="central not-visible">Finish</div>
+      <button id="reset-game" class="not-visible">Reset Game</button>
+      <button id="reset-ships">Reset Ships</button>
     </div>
 
+    <div class="hide-player p2"></div>
     <div class="player2">
       <div class="gameboard" id="gameboard2">
         <div class="columnHeaders">

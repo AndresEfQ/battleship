@@ -441,6 +441,27 @@ describe("reset game should delete all ships and all hits from the boards", () =
   });
 });
 
+describe("game should set the active players", () => {
+
+  test("game should start with player 1 as active player", () => {
+    const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
+    expect(game.activePlayer).toBe(game.player1);
+  });
+
+  test("game should change active players", () => {
+    const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
+    game.changeActivePlayer();
+    expect(game.activePlayer).toBe(game.player2);
+  });
+
+  test("game should correctly loop through active players", () => {
+    const game = new Game(fakeDomGameboard, fakeDomShip, '2p', 7);
+    game.changeActivePlayer();
+    game.changeActivePlayer();
+    expect(game.activePlayer).toBe(game.player1);
+  });
+});
+
 /* describe("dom interaction module placeShips function", () => {
 
   test("placeShips should take ")

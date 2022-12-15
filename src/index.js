@@ -3,7 +3,6 @@ import DomGameboard from "../modules/domGameboard";
 import DomShip from "../modules/domShip";
 import "./styles/index.css"
 
-
 const grids = document.getElementsByClassName('grid');
 for (let i = 0; i < 2; i++) {
   for (let j = 1; j <= 100; j++) {
@@ -17,7 +16,7 @@ for (let i = 0; i < 2; i++) {
 }
 
 let game;
-const startGame = document.getElementById('start-game');
+const startGame = document.querySelector('.start-game');
 const playModes = document.getElementsByClassName('play-mode');
 for (let button of playModes) {
   button.addEventListener('touch', (e) => {
@@ -34,12 +33,31 @@ for (let button of playModes) {
 }
 
 const newGameButton = document.getElementById('new-game');
+const pass = document.getElementById('pass');
+const random = document.getElementById('random');
+const finish = document.getElementById('finish');
+const resetGame = document.getElementById('reset-game');
+const resetShips = document.getElementById('reset-ships');
+
 newGameButton.addEventListener('touch', () => startGame.classList.remove('not-visible'));
 newGameButton.addEventListener('click', () => startGame.classList.remove('not-visible'));
 
+pass.addEventListener('touch', () => game.passDevice());
+pass.addEventListener('click', () => game.passDevice());
+finish.addEventListener('touch', () => game.passDevice());
+finish.addEventListener('click', () => game.passDevice());
+
+random.addEventListener('touch', () => game.activePlayer.randomizeShips());
+random.addEventListener('click', () => game.activePlayer.randomizeShips());
+
+resetShips.addEventListener('touch', () => game.activePlayer.resetAllShips());
+resetShips.addEventListener('click', () => game.activePlayer.resetAllShips());
+
+resetGame.addEventListener('touch', () => game.resetGame());
+resetGame.addEventListener('click', () => game.resetGame());
+
 function setGame(game) {
   let domGameboard1 = new DomGameboard(game.player1);
-  let domGameboard2 = new DomGameboard(game.player2);
   
   for (let domShip of game.player1.domShips) {
     let shipDiv = domShip.shipDiv;
@@ -63,5 +81,20 @@ function setGame(game) {
     rotateButton.addEventListener('click', (e) => domShip.rotateShip(e)); // Only for testind, might delete
   }
   domGameboard1.orientButtons();
-  domGameboard1.setPlaceShipControls();
 }
+
+/* 
+this.central.addEventListener('touch', () => this.player.randomizeShips());
+this.central.addEventListener('click', randomize);
+this.central.textContent = 'Random';
+this.resetGame.addEventListener('touch', resetShips);
+this.resetGame.addEventListener('click', resetShips);
+this.resetGame.textContent = 'Reset Ships';
+
+
+this.central.removeEventListener('touch', randomize)
+this.central.removeEventListener('click', randomize)
+this.central.addEventListener('touch', passDevice);
+this.central.addEventListener('click', passDevice);
+this.central.textContent = 'Finish'; */
+

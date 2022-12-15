@@ -10,6 +10,7 @@ export default function Game(DomGameboard, DomShip, mode, size) {
     new Player(DomGameboard, DomShip, '2', 'computer');
   this.gameboard1 = new Gameboard(size);
   this.gameboard2 = new Gameboard(size);
+  this.activePlayer = this.player1;
 
   this.player1.setGameboards(this.gameboard1, this.gameboard2);
   this.player2.setGameboards(this.gameboard2, this.gameboard1);
@@ -23,5 +24,14 @@ export default function Game(DomGameboard, DomShip, mode, size) {
     for (let ship of this.gameboard2.board) {
       this.gameboard2.deleteShip(ship.coordinates[0]);
     }
+  }
+
+  this.changeActivePlayer = function () {
+    this.activePlayer = this.activePlayer === this.player1 ? this.player2 : this.player1;
+  }
+
+  this.passDevice = function () {
+    this.activePlayer.domGameboard.passDevice();
+    this.changeActivePlayer();
   }
 }

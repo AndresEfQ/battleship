@@ -3,8 +3,11 @@ export default function DomGameboard(player) {
   this.player = player;
   this.controls = document.getElementsByClassName('controls');
   this.newGame = document.getElementById('new-game');
-  this.central = document.getElementById('central');
+  this.central = document.getElementById('pass');
+  this.random = document.getElementById('random');
+  this.finish = document.getElementById('finish');
   this.resetGame = document.getElementById('reset-game');
+  this.resetShips = document.getElementById('reset-ships');
   const grids = document.getElementsByClassName('grid');
   this.grid = [...grids].find((grid) => grid.classList.contains(this.player.id));
 
@@ -31,6 +34,7 @@ export default function DomGameboard(player) {
         document.elementFromPoint(x, y).classList.contains(player.id)) {
       cell = document.elementFromPoint(x, y);
       this.hideCoordinates();
+      console.log(cell.dataset.coordinates);
       return cell.dataset.coordinates;
     } 
     // this.resetShip(player);
@@ -42,7 +46,7 @@ export default function DomGameboard(player) {
   * Transforms the middle button back into a button after being an information div.
   */
    this.hideCoordinates = function() {
-    let infoDiv = document.getElementById('central');
+    let infoDiv = document.getElementById('random');
     infoDiv.classList.remove('info');
     infoDiv.textContent = 'Random'
   }
@@ -78,32 +82,22 @@ export default function DomGameboard(player) {
     
   }
 
-  const randomize = function () {
-    this.player.randomizeShips();
+  this.hide = function (node) {
+    node.classList.add('not-visible');
   }
 
-  const resetShips = () => {
-    this.player.resetAllShips();
+  this.show = function (node) {
+    node.classList.remove('not-visible');
   }
 
-  const passDevice = () => {
-    this.passDevice();
+  this.placeShipsControls = function () {
+    this.show(this.random);
+    this.hide(this.finish);
   }
 
-  this.setPlaceShipControls = function () {
-    this.central.addEventListener('touch', randomize);
-    this.central.addEventListener('click', randomize);
-    this.central.textContent = 'Random';
-    this.resetGame.addEventListener('touch', resetShips);
-    this.resetGame.addEventListener('click', resetShips);
-    this.resetGame.textContent = 'Reset Ships';
+  this.finishPlaceShipsControls = function () {
+    this.hide(this.random);
+    this.show(this.finish);
   }
 
-  this.setFinishShipPlacementControls = function () {
-    this.central.removeEventListener('touch', randomize)
-    this.central.removeEventListener('click', randomize)
-    this.central.addEventListener('touch', passDevice);
-    this.central.addEventListener('click', passDevice);
-    this.central.textContent = 'Finish';
-  }
-};
+}

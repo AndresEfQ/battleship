@@ -25,14 +25,18 @@ export default function DomShip(ship, playerId) {
     let yCoord = parseInt(col);
     let cell;
 
+    // Correct positions for horizontal directions
+    if (this.direction === 'h' && xCoord > 11 - this.shipLength) {
+      xCoord = 11 - this.shipLength;
+    }
+      
+    // Correct positions for vertical directions
+    else if (this.direction === 'v' && yCoord > 11 - this.shipLength) {
+      yCoord = 11 - this.shipLength;
+    }
+
     cell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[playerId - 1];
-    /* try {
-      player.placeShip(new Ship(this.shipLength), [xCoord, yCoord], this.direction);
-    } catch (error) {
-      console.log(error);
-      this.resetShip();
-      return 0;
-    } */
+   
     // Don't allow ship rotations when they have been placed in the board. It caused all kind of visual and logic problems
     this.showRotateShip = function () {console.log('Rotation not allowed after placing a ship in the board')};
 
@@ -145,7 +149,7 @@ export default function DomShip(ship, playerId) {
   */
   this.showCoordinates = function(x, y) {
     let columns = [null, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-    let infoDiv = document.getElementById('central');
+    let infoDiv = document.getElementById('random');
     let cell;
     let coordinates;
     if (document.elementFromPoint(x, y).classList.contains('cell') &&
