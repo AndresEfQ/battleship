@@ -36,10 +36,14 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
 
   this.placeShip = function (e) {
     let coordinates = this.domGameboard.getShipLocation(e);
+    let domShip = this.domShips.find((domShip) => e.target.classList.contains(domShip.ship.id));
+    if (!coordinates) {
+      domShip.resetShip();
+      return;
+    }
     let [x, y] = coordinates.split(',');
     let xCoord = parseInt(x);
     let yCoord = parseInt(y);
-    let domShip = this.domShips.find((domShip) => e.target.classList.contains(domShip.ship.id));
     // Correct positions for horizontal directions
     if (domShip.direction === 'h' && xCoord > 11 - domShip.shipLength) {
       xCoord = 11 - domShip.shipLength;
@@ -56,6 +60,7 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
       return 1;
     } catch (error) {
       console.log(error);
+      domShip.resetShip();
       return 0;
     } finally {
       this.finishShipPlacement();
