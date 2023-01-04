@@ -35,7 +35,7 @@ for (let button of playModes) {
 const newGameButton = document.getElementById('new-game');
 const pass = document.getElementById('pass');
 const random = document.getElementById('random');
-const finish = document.getElementById('finish');
+const finishPlacingShips = document.getElementById('finish');
 const resetGame = document.getElementById('reset-game');
 const resetShips = document.getElementById('reset-ships');
 
@@ -44,8 +44,8 @@ newGameButton.addEventListener('click', () => startGame.classList.remove('not-vi
 
 pass.addEventListener('touch', () => game.passDevice());
 pass.addEventListener('click', () => game.passDevice());
-finish.addEventListener('touch', () => game.passDevice());
-finish.addEventListener('click', () => game.passDevice());
+finishPlacingShips.addEventListener('touch', () => game.finishPlacingShips());
+finishPlacingShips.addEventListener('click', () => game.finishPlacingShips());
 
 random.addEventListener('touch', () => game.activePlayer.randomizeShips());
 random.addEventListener('click', () => game.activePlayer.randomizeShips());
@@ -57,7 +57,6 @@ resetGame.addEventListener('touch', () => game.resetGame());
 resetGame.addEventListener('click', () => game.resetGame());
 
 function setGame(game) {
-  let domGameboard1 = new DomGameboard(game.player1);
   
   for (let domShip of game.player1.domShips) {
     let shipDiv = domShip.shipDiv;
@@ -80,7 +79,7 @@ function setGame(game) {
     rotateButton.addEventListener('touch', (e) => domShip.rotateShip(e));
     rotateButton.addEventListener('click', (e) => domShip.rotateShip(e)); // Only for testind, might delete
   }
-  domGameboard1.orientButtons();
+  game.activePlayer.domGameboard.orientButtons();
 }
 
 /* 

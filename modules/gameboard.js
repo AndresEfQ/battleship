@@ -26,6 +26,8 @@ export default function Gameboard(size) {
       if (this.shipsCollide(placedShip)) throw new Error("ship placed over an existing ship");
     }
     this.board.push(placedShip);
+    ship.placed = true;
+    ship.coordinates = [x, y].join(',');
   };
 
   

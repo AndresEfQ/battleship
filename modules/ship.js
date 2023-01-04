@@ -3,6 +3,8 @@ export default function Ship(length, id) {
   this.length = length;
   this.hits = 0;
   this.sunken = false;
+  this.placed = false;
+  this.coordinates;
   
   this.isSunk = function () {
     if (this.hits === this.length) {

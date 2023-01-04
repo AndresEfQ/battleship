@@ -9,7 +9,8 @@ export default function DomGameboard(player) {
   this.resetGame = document.getElementById('reset-game');
   this.resetShips = document.getElementById('reset-ships');
   const grids = document.getElementsByClassName('grid');
-  this.grid = [...grids].find((grid) => grid.classList.contains(this.player.id));
+  this.grid = [...grids].find(grid => grid.classList.contains(player.id));
+  this.gameboard = document.getElementById(`gameboard${player.id}`);
 
   this.buildGrid = function () {
     for (let j = 1; j <= 100; j++) {
@@ -61,20 +62,20 @@ export default function DomGameboard(player) {
     this.buildGrid();
   };
 
-  this.placePlayerShips = function () {
+  /* this.placePlayerShips = function () {
     const randomFinish = document.getElementById('pass');
     const reset = document.getElementById('reset-game');
     
     reset.textContent = "Reset Ships";
     randomFinish.textContent = "Randomize";
     
-  }
+  } */
   
   this.orientButtons = function () {
     if (this.player.id === '1') {
       this.controls[0].style.transform = "rotate(180deg) translate(0, 50%)";
     } else if (this.player.id === '2') {
-      this.controls[0].style.transform = "translate(0, 50%)";
+      this.controls[0].style.transform = "translate(0, -50%)";
     }
   }
 
@@ -98,6 +99,18 @@ export default function DomGameboard(player) {
   this.finishPlaceShipsControls = function () {
     this.hide(this.random);
     this.show(this.finish);
+  }
+
+  this.attackControls = function () {
+    this.hide(this.finish);
+    this.hide(this.resetShips);
+    this.show(this.central);
+    this.show(this.resetGame);
+  }
+
+  this.hideBoard = function () {
+    console.log(this.gameboard.classList);
+    this.gameboard.classList.add('opaque');
   }
 
 }

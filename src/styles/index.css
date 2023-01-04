@@ -147,13 +147,13 @@ h1 {
 div.ship-div {
   position: relative;
   display: inline-block;
-  outline: 1px solid red;
+  /* outline: 1px solid red; */
 }
 
 .ship-img {
   pointer-events: none;
   transform-origin: 0 0;
-  outline: 1px solid blue;
+  /* outline: 1px solid blue; */
   transition: opacity 1s ease-in-out;
 }
 
@@ -213,6 +213,7 @@ div.ship-div {
   position: absolute;
   top: 50%;
   transform: translate(0, -50%);
+  transform-origin: center;
   width: 95%;
   margin: 0 2.5%;
   display: grid;

@@ -14,6 +14,7 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
     new Ship(2, 'destroyer'),
   ];
   this.domShips = this.ships.map((ship) => new DomShip(ship, this.id));
+  this.areShipsPlaced = false;
 
   this.setGameboards = function (ownGameboard, enemyGameboard) {
     this.ownGameboard = ownGameboard
@@ -44,16 +45,20 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
     let [x, y] = coordinates.split(',');
     let xCoord = parseInt(x);
     let yCoord = parseInt(y);
+    let direction = domShip.direction;
+
     // Correct positions for horizontal directions
-    if (domShip.direction === 'h' && xCoord > 11 - domShip.shipLength) {
+    if (direction === 'h' && xCoord > 11 - domShip.shipLength) {
       xCoord = 11 - domShip.shipLength;
     }
       
     // Correct positions for vertical directions
-    else if (domShip.direction === 'v' && yCoord > 11 - domShip.shipLength) {
+    else if (direction === 'v' && yCoord > 11 - domShip.shipLength) {
       yCoord = 11 - domShip.shipLength;
     }
-    let direction = domShip.direction;
+
+    if (domShip.ship.placed) this.ownGameboard.deleteShip(domShip.ship.coordinates);
+
     try {
       this.ownGameboard.placeShip(domShip.ship, [xCoord, yCoord], direction);
       domShip.positionShip(coordinates);
@@ -63,7 +68,7 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
       domShip.resetShip();
       return 0;
     } finally {
-      this.finishShipPlacement();
+      this.checkFinishShipPlacement();
       console.log(this.ownGameboard.board);
     }
   }
@@ -117,12 +122,13 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
       domShip.placeShip(`${x},${y}`, direction);
     }
     console.log(this.ownGameboard);
-    this.domGameboard.finishPlaceShipsControls();
+    this.checkFinishShipPlacement();
     return;
   }
 
-  this.finishShipPlacement = function () {
+  this.checkFinishShipPlacement = function () {
     if (this.ownGameboard.board.length === 4) {
+      this.areShipsPlaced = true;
       this.domGameboard.finishPlaceShipsControls();
     }
   }
