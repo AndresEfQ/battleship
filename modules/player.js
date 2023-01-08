@@ -62,6 +62,7 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
     try {
       this.ownGameboard.placeShip(domShip.ship, [xCoord, yCoord], direction);
       domShip.positionShip(coordinates);
+      console.log(this.ownGameboard);
       return 1;
     } catch (error) {
       console.log(error);

@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+body {
+  overscroll-behavior: contain;
+  overflow: hidden;
+}
+
 .start-game {
   position: absolute;
   left: 50%;
@@ -19,7 +24,7 @@
   flex-direction: column;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   text-align: center;
-  padding: 6vh;
+  padding: 3vh;
   border: 3px solid rgb(255, 0, 0);
   border-radius: 20px;
 }
@@ -29,28 +34,53 @@
   gap: 4vh;
 }
 
-body {
-  overscroll-behavior: contain;
-  overflow: hidden;
+.start-game > p {
+  font-size: 12px;
+}
+
+.pass-device {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 5;
+  top: 50%;
+  transform: translate(0,-40%);
+}
+
+#arrow {
+  transform: rotate(180deg);
+}
+
+.pass-device button {
+  width: fit-content;
+  padding: 2vh 4vh;
+  margin-left: 50%;
+  transform: translate(-50%);
 }
 
 .hide-player {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 5;
+}
+
+.hide-player.allow-player {
+  display: none;
+}
+
+.hide-gameboard {
   position: absolute;
   height: 93%;
   width: 100%;
   background-color: rgb(196, 196, 196);
   opacity: 0;
-  /* z-index: 3; */
   transition: opacity 1s ease-in-out;
   overflow: hidden;
   pointer-events: none;
 }
 
-.hide-player.p2 {
-  /* bottom: 0; */
-}
-
-.hide-player > img {
+.hide-gameboard > img {
   height: 100%;
   width: 100%;
   position: absolute;
@@ -62,7 +92,7 @@ body {
   transform: translate(100%);
 }
 
-.opaque .hide-player {
+.opaque .hide-gameboard {
   opacity: 1;
 }
 
@@ -70,7 +100,7 @@ body {
   transform: translate(0);
 }
 
-.player1 {
+.player2 {
   height: 40vh;
   width: 100vw;
   transform: rotate(180deg);
@@ -79,7 +109,7 @@ body {
   align-items: center;
 }
 
-.player2 {
+.player1 {
   height: 40vh;
   width: 100vw;
   position: absolute;
@@ -147,13 +177,13 @@ h1 {
 div.ship-div {
   position: relative;
   display: inline-block;
-  /* outline: 1px solid red; */
+  outline: 1px solid red;
 }
 
 .ship-img {
   pointer-events: none;
   transform-origin: 0 0;
-  /* outline: 1px solid blue; */
+  outline: 1px solid blue;
   transition: opacity 1s ease-in-out;
 }
 
@@ -167,6 +197,7 @@ div.ship-div {
   width: 30vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   z-index: 3;
+  transition: transform 250ms ease-in-out;
 }
 
 .cell {

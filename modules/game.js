@@ -39,6 +39,7 @@ export default function Game(DomGameboard, DomShip, mode, size) {
     this.activePlayer.domGameboard.hideBoard();
     this.changeActivePlayer();
     this.activePlayer.domGameboard.orientButtons();
+    this.activePlayer.domGameboard.allowPlayer2();
     if (!this.activePlayer.areShipsPlaced) {
       this.activePlayer.domGameboard.placeShipsControls();
     } else {

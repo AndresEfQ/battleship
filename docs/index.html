@@ -8,7 +8,11 @@
   <script src="main.js" defer></script>
 </head>
 <body>
-  <div class="container" id="testGameboard">
+  <div class="pass-device">
+    <img id="arrow" src="./images/arrow.svg" alt="arrow">
+    <button id="receive-device">GOT IT</button>
+  </div>
+  <div class="container">
     <div class="start-game">
       <h1>WELCOME TO BATTLESHIP</h1>
       <h4>Do you want to play with a friend or by yourself?</h4>
@@ -16,10 +20,12 @@
         <button class="play-mode" data-mode="1p">Play by myself</button>
         <button class="play-mode" data-mode="2p">Play with a friend</button>
       </div>
+      <p>* Please lock the screen rotation</p>
     </div>
-    <div class="player1">
-      <div class="gameboard" id="gameboard1">
-        <div class="hide-player p1">
+    <div class="player2">
+      <div class="hide-player" id="hide-player2"></div>
+      <div class="gameboard" id="gameboard2">
+        <div class="hide-gameboard p2">
           <img src="./images/clouds1.png" id="clouds1" alt="clouds">
           <img src="./images/clouds2.png" id="clouds2" alt="clouds">
         </div>
@@ -47,24 +53,24 @@
           <div class="cellH">9</div>
           <div class="cellH">10</div>
         </div>
-        <div class="grid 1" id="test-grid"></div>
+        <div class="grid 2" id="test-grid"></div>
       </div>
       <header>
         <h1>Place your ships</h1>
-        <div class="ships 1">
-          <div class="ship-div 1 battleship">
+        <div class="ships 2">
+          <div class="ship-div 2 battleship">
             <div class="rotate"><img src="./images/rotate-right.png" alt="rotate"></div>
             <img src="./images/battleship.png" alt="battleship" class="ship-img battleship">
           </div>
-          <div class="ship-div 1 cruisser">
+          <div class="ship-div 2 cruisser">
             <div class="rotate"><img src="./images/rotate-right.png" alt="rotate"></div>
             <img src="./images/cruisser.png" alt="cruisser" class="ship-img cruisser">
           </div>
-          <div class="ship-div 1 submarine">
+          <div class="ship-div 2 submarine">
             <div class="rotate"><img src="./images/rotate-right.png" alt="rotate"></div>
             <img src="./images/submarine.png" alt="submarine" class="ship-img submarine">
           </div>
-          <div class="ship-div 1 destroyer">
+          <div class="ship-div 2 destroyer">
             <div class="rotate"><img src="./images/rotate-right.png" alt="rotate"></div>
             <img src="./images/destroyer.png" alt="destroyer" class="ship-img destroyer">
           </div>
@@ -82,9 +88,9 @@
       <button id="reset-ships">Reset Ships</button>
     </div>
 
-    <div class="player2">
-      <div class="gameboard" id="gameboard2">
-        <div class="hide-player p2">
+    <div class="player1">
+      <div class="gameboard" id="gameboard1">
+        <div class="hide-gameboard p1">
           <img src="./images/clouds1.png" id="clouds1" alt="clouds">
           <img src="./images/clouds2.png" id="clouds2" alt="clouds">
         </div>
@@ -112,24 +118,24 @@
           <div class="cellH">9</div>
           <div class="cellH">10</div>
         </div>
-        <div class="grid 2"></div>
+        <div class="grid 1"></div>
       </div>
       <header>
         <h1>Place your ships</h1>
-        <div class="ships 2">
-          <div class="ship-div 2 battleship" id="test-div-bs">
+        <div class="ships 1">
+          <div class="ship-div 1 battleship" id="test-div-bs">
             <div class="rotate"><img src="./images/rotate-right.png" alt="rotate"></div>
             <img src="./images/battleship.png" alt="battleship" class="ship-img battleship" id="testImg">
           </div>
-          <div class="ship-div 2 cruisser" id="test-div-cr">
+          <div class="ship-div 1 cruisser" id="test-div-cr">
             <div class="rotate"><img src="./images/rotate-right.png" alt="rotate"></div>
             <img src="./images/cruisser.png" alt="cruisser" class="ship-img cruisser">
           </div>
-          <div class="ship-div 2 submarine" id="test-div-sm">
+          <div class="ship-div 1 submarine" id="test-div-sm">
             <div class="rotate"><img src="./images/rotate-right.png" alt="rotate"></div>
             <img src="./images/submarine.png" alt="submarine" class="ship-img submarine">
           </div>
-          <div class="ship-div 2 destroyer" id="test-div-dr">
+          <div class="ship-div 1 destroyer" id="test-div-dr">
             <div class="rotate"><img src="./images/rotate-right.png" alt="rotate"></div>
             <img src="./images/destroyer.png" alt="destroyer" class="ship-img destroyer">
           </div>

@@ -10,7 +10,7 @@ for (let i = 0; i < 2; i++) {
     let x = j % 10 === 0 ? 10 : j % 10;
     let y = Math.ceil(j / 10);
     cell.dataset.coordinates = `${x},${y}`
-    cell.className = `cell ${i + 1}`;
+    cell.className = `cell ${i === 0 ? 2 : 1}`;
     grids[i].appendChild(cell);
   }
 }
@@ -32,6 +32,7 @@ for (let button of playModes) {
   });
 }
 
+// TODO place all this in DomGameboard
 const newGameButton = document.getElementById('new-game');
 const pass = document.getElementById('pass');
 const random = document.getElementById('random');
@@ -56,6 +57,7 @@ resetShips.addEventListener('click', () => game.activePlayer.resetAllShips());
 resetGame.addEventListener('touch', () => game.resetGame());
 resetGame.addEventListener('click', () => game.resetGame());
 
+// TODO place this function in game
 function setGame(game) {
   
   for (let domShip of game.player1.domShips) {
@@ -81,19 +83,3 @@ function setGame(game) {
   }
   game.activePlayer.domGameboard.orientButtons();
 }
-
-/* 
-this.central.addEventListener('touch', () => this.player.randomizeShips());
-this.central.addEventListener('click', randomize);
-this.central.textContent = 'Random';
-this.resetGame.addEventListener('touch', resetShips);
-this.resetGame.addEventListener('click', resetShips);
-this.resetGame.textContent = 'Reset Ships';
-
-
-this.central.removeEventListener('touch', randomize)
-this.central.removeEventListener('click', randomize)
-this.central.addEventListener('touch', passDevice);
-this.central.addEventListener('click', passDevice);
-this.central.textContent = 'Finish'; */
-

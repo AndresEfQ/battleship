@@ -1,4 +1,6 @@
-import Ship from "./ship";
+/*
+* Module responsible for DOM interactions with the ships
+*/
 
 export default function DomShip(ship, playerId) {
 
@@ -12,8 +14,6 @@ export default function DomShip(ship, playerId) {
   this.direction = 'h';
   this.x0;
   this.y0;
-  this.x;
-  this.y;
 
   /*
   * Appends the img div to the correct board cell. The cell is corrected when it is too close to the
@@ -35,7 +35,7 @@ export default function DomShip(ship, playerId) {
       yCoord = 11 - this.shipLength;
     }
 
-    cell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[playerId - 1];
+    cell = document.querySelectorAll(`[data-coordinates="${xCoord},${yCoord}"]`)[playerId == 1 ? 1 : 0];
    
     // Don't allow ship rotations when they have been placed in the board. It caused all kind of visual and logic problems
     this.showRotateShip = function () {console.log('Rotation not allowed after placing a ship in the board')};
@@ -47,8 +47,6 @@ export default function DomShip(ship, playerId) {
     this.shipImg.style.bottom = null;
     this.x0 = null;
     this.y0 = null;
-    this.x = xCoord;
-    this.y = yCoord;
     return 1
   }
 
@@ -58,13 +56,6 @@ export default function DomShip(ship, playerId) {
     this.shipImg.style.right = null;
     this.shipImg.style.top = null;
     this.shipImg.style.bottom = null;
-    if (this.x || this.y) {
-      try {
-        this.player.placeShip(new Ship(this.shipLength), [this.x, this.y], this.direction);
-      } catch (error) {
-        console.log(error)
-      }
-    }
   }
 
   /* 
@@ -77,26 +68,20 @@ export default function DomShip(ship, playerId) {
     let y = e.changedTouches[0].clientY;
     this.shipImg.style.position = 'absolute';
 
-    /* if (this.x || this.y) {
-      this.player.deleteShip(`${[this.x, this.y]}`);
-    } */
-
     if (!this.x0) this.x0 = x;
     if (!this.y0) this.y0 = y;
     
-    if (playerId === '1') {
+    if (playerId === '2') {
       this.shipImg.style.right = `${x - this.x0}px`;
       this.shipImg.style.bottom = `${y - this.y0}px`;
       
-    } else if (playerId === '2') {
+    } else if (playerId === '1') {
       this.shipImg.style.left = `${x - this.x0}px`;
       this.shipImg.style.top = `${y - this.y0}px`;
     }
     this.showCoordinates(x, y);
   }
   
-  
-
   /* 
   * Remove the visible class of all rotation divs
   */
@@ -144,8 +129,9 @@ export default function DomShip(ship, playerId) {
   }
   
   /*
-  * Could go to dom-board
   * Transforms the middle button into an information div and reports the cell being touched.
+  * TODO move function to domGameboard and allow hidding coordinates when the finger moves outside
+  * the gameboard.
   */
   this.showCoordinates = function(x, y) {
     let columns = [null, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -155,9 +141,7 @@ export default function DomShip(ship, playerId) {
     if (document.elementFromPoint(x, y).classList.contains('cell') &&
         document.elementFromPoint(x, y).classList.contains(playerId)) {
       cell = document.elementFromPoint(x, y);
-    } else {
-      // this.hideCoordinates();
-    }
+    } 
     if (cell) {
       coordinates = cell.dataset.coordinates;
       let [col, row] = coordinates.split(',');
@@ -174,5 +158,4 @@ export default function DomShip(ship, playerId) {
     this.shipImg.style.position = "absolute";
     return this.positionShip(coordinates);
   }
-  
 }
