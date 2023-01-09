@@ -35,6 +35,8 @@ export default function Game(DomGameboard, DomShip, mode, size) {
   this.passDevice = function () {
     this.activePlayer.domGameboard.passDevice();
     this.changeActivePlayer();
+    this.activePlayer.domGameboard.orientButtons();
+    this.activePlayer.domGameboard.attackControls();
   }
   
   this.finishPlacingShips = function () {
@@ -52,7 +54,6 @@ export default function Game(DomGameboard, DomShip, mode, size) {
   }
 
   this.showActivePlayerBoard = function () {
-    console.log('show board');
     this.activePlayer.domGameboard.hidePassDevice();
   }
 

@@ -7,7 +7,8 @@ export default function DomGameboard(player) {
   this.player = player;
   this.controls = document.getElementsByClassName('controls');
   this.newGame = document.getElementById('new-game');
-  this.central = document.getElementById('pass');
+  this.pass = document.getElementById('pass');
+  this.inactivePass = document.getElementById('inactive_pass');
   this.random = document.getElementById('random');
   this.finish = document.getElementById('finish');
   this.resetGame = document.getElementById('reset-game');
@@ -21,8 +22,8 @@ export default function DomGameboard(player) {
   this.message = document.getElementById(`message${player.id}`);
 
   /*
-  * Helper function to build each player's grid, reduces the html code and is used to delete the
-  * ships placed in the board
+  * Helper function to build each player's grid, reduces the html code and 
+  * is used to delete the ships placed in the board
   */ 
   this.buildGrid = function () {
     for (let j = 1; j <= 100; j++) {
@@ -36,8 +37,9 @@ export default function DomGameboard(player) {
   };
 
   /* 
-  * Sets x and y to the final dragging point (endtouch event) and calls positionShip() if it is 
-  * inside the correct gameboard's grid. Otherwise, it resets the img position.
+  * Sets x and y to the final dragging point (endtouch event) and calls 
+  * positionShip() if it is inside the correct gameboard's grid. Otherwise, 
+  * it resets the img position.
   */ 
   this.getShipLocation = function (e) {
     let x = e.changedTouches[0].clientX;
@@ -87,7 +89,9 @@ export default function DomGameboard(player) {
   }
 
   this.passDevice = function () {
-    
+    this.showPassDevice();
+    this.hideBoard();
+    this.message.classList.remove('show_message');
   }
 
   /*
@@ -113,7 +117,8 @@ export default function DomGameboard(player) {
   }
 
   /*
-  * Show the control buttons for finishing placing ships and giving control to the other player
+  * Show the control buttons for finishing placing ships and giving control 
+  * to the other player
   */
   this.finishPlaceShipsControls = function () {
     this.hide(this.random);
@@ -126,7 +131,8 @@ export default function DomGameboard(player) {
   this.attackControls = function () {
     this.hide(this.finish);
     this.hide(this.resetShips);
-    this.show(this.central);
+    this.hide(this.pass);
+    this.show(this.inactivePass);
     this.show(this.resetGame);
   }
 
@@ -166,8 +172,9 @@ export default function DomGameboard(player) {
     this.passDeviceArrow.classList.remove('not-visible');
     console.log(this.player.id);
     if (this.player.id == 2) {
-      console.log(this.passDeviceArrow.style.transform);
       this.passDeviceArrow.style.transform = 'rotate(0deg)';
+    } else {
+      this.passDeviceArrow.style.transform = 'rotate(180deg';
     }
   }
 
@@ -189,7 +196,8 @@ export default function DomGameboard(player) {
   }
 
   this.receiveAttack = function (e) {
-    let attack = this.player.ownGameboard.receiveAttack(e.target.dataset.coordinates.split(','))
+    let attack = this.player.attack(e.target.dataset.coordinates.split(','));
+    console.log(attack);
     if (!attack.hit) {
       e.target.append('O');
       e.target.classList.add('miss');
@@ -201,6 +209,8 @@ export default function DomGameboard(player) {
     for (let gameboard of this.allGameboards) {
       gameboard.classList.add('block-gameboard');
     }
+    this.hide(this.inactivePass);
+    this.show(this.pass);
   }
 
   this.showAttackMessage = function (attack) {
@@ -210,7 +220,6 @@ export default function DomGameboard(player) {
       this.message.textContent = `You hit the ${attack.ship}!${attack.sunken ? " it's sunken" : ""}`;
     }
     this.message.classList.add('show_message');
-    console.log(attack);
   }
 
 }

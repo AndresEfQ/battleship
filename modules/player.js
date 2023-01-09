@@ -32,7 +32,7 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
       } while (this.moves.has(coordinates.join(',')))
     }
     this.moves.add(coordinates.join(','));
-    this.enemyGameboard.receiveAttack(coordinates);
+    return this.enemyGameboard.receiveAttack(coordinates);
   }
 
   this.placeShip = function (e) {

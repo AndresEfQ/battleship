@@ -45,6 +45,7 @@ newGameButton.addEventListener('click', () => startGame.classList.remove('not-vi
 
 pass.addEventListener('touch', () => game.passDevice());
 pass.addEventListener('click', () => game.passDevice());
+
 finishPlacingShips.addEventListener('touch', () => game.finishPlacingShips());
 finishPlacingShips.addEventListener('click', () => game.finishPlacingShips());
 

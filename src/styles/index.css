@@ -250,6 +250,10 @@ button, .central {
   justify-content: center;
 }
 
+#inactive_pass {
+  background-color: rgb(110, 110, 110);
+}
+
 .info {
   outline: 3px solid red;
   background-color: #fff;
@@ -306,12 +310,12 @@ button, .central {
   position: absolute;
   font-weight: 900;
   text-align: center;
-  background-color: rgb(240, 240, 240);
+  background-color: #fff;
   margin-top: 50%;
   margin-left: 50%;
   transform: translate(-50%, -50%);
   display: none;
-  z-index: 1;
+  z-index: 4;
 }
 
 .message.show_message {
