@@ -14,8 +14,11 @@ export default function DomGameboard(player) {
   this.resetShips = document.getElementById('reset-ships');
   const grids = document.getElementsByClassName('grid');
   this.grid = [...grids].find(grid => grid.classList.contains(player.id));
+  this.allGameboards = document.getElementsByClassName('gameboard');
   this.gameboard = document.getElementById(`gameboard${player.id}`);
   this.hidePlayer2 = document.getElementById('hide-player2');
+  this.passDeviceArrow = document.getElementById('pass-device');
+  this.message = document.getElementById(`message${player.id}`);
 
   /*
   * Helper function to build each player's grid, reduces the html code and is used to delete the
@@ -44,7 +47,6 @@ export default function DomGameboard(player) {
         document.elementFromPoint(x, y).classList.contains(player.id)) {
       cell = document.elementFromPoint(x, y);
       this.hideCoordinates();
-      console.log(cell.dataset.coordinates);
       return cell.dataset.coordinates;
     } 
     this.hideCoordinates();
@@ -133,23 +135,82 @@ export default function DomGameboard(player) {
   */
   this.hideBoard = function () {
     this.gameboard.classList.add('opaque');
+    this.gameboard.classList.remove('block-gameboard');
+  }
+
+  this.showBoard = function () {
+    console.log(this.gameboard);
+    this.gameboard.classList.remove('opaque');
+    this.gameboard.classList.add('block-gameboard');
   }
 
   this.hidePlayer2.addEventListener('click', () => this.highlightPlayer1())
   this.hidePlayer2.addEventListener('touch', () => this.highlightPlayer1())
   this.hidePlayer2.addEventListener('touchmove', () => this.highlightPlayer1())
 
-  this.highlightPlayer1 = function() {
+  this.highlightPlayer1 = function () {
     if (player.id === '1') {
-      this.gameboard.style.transform = 'scale(1.1)';
+      let player1 = document.getElementById('player1')
+      player1.style.transform = 'scale(1.1)';
       setTimeout(() => {
-        this.gameboard.style.transform = null;
+        player1.style.transform = null;
       }, 500);
     }
   }
 
-  this.allowPlayer2 = function() {
-    this.hidePlayer2.classList.add('allow-player');
+  this.allowPlayer2 = function () {
+    this.hidePlayer2.classList.add('not-visible');
+  }
+
+  this.showPassDevice = function () {
+    this.passDeviceArrow.classList.remove('not-visible');
+    console.log(this.player.id);
+    if (this.player.id == 2) {
+      console.log(this.passDeviceArrow.style.transform);
+      this.passDeviceArrow.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  this.hidePassDevice = function () {
+    this.passDeviceArrow.classList.add('not-visible');
+    this.showBoard();
+  }
+
+  this.lockShips = function () {
+    for (let cell of this.grid.children) {
+      cell.addEventListener('click', (e) => this.receiveAttack(e));
+      cell.addEventListener('touch', (e) => this.receiveAttack(e));
+      if (cell.children.length) {
+        let shipImg = cell.children[0].children[1];
+        cell.removeChild(cell.children[0])
+        cell.append(shipImg);
+      }
+    }
+  }
+
+  this.receiveAttack = function (e) {
+    let attack = this.player.ownGameboard.receiveAttack(e.target.dataset.coordinates.split(','))
+    if (!attack.hit) {
+      e.target.append('O');
+      e.target.classList.add('miss');
+    } else {
+      e.target.append('X');
+      e.target.classList.add('hit');
+    }
+    this.showAttackMessage(attack);
+    for (let gameboard of this.allGameboards) {
+      gameboard.classList.add('block-gameboard');
+    }
+  }
+
+  this.showAttackMessage = function (attack) {
+    if (!attack.hit) {
+      this.message.textContent = `You Missed!`
+    } else {
+      this.message.textContent = `You hit the ${attack.ship}!${attack.sunken ? " it's sunken" : ""}`;
+    }
+    this.message.classList.add('show_message');
+    console.log(attack);
   }
 
 }

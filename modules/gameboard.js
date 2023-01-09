@@ -52,6 +52,8 @@ export default function Gameboard(size) {
 
   this.receiveAttack = function (coordinates) {
     const [x, y] = coordinates;
+    console.log({x, y});
+    let result = {}
     if (x <= 0 || x > size || y <= 0 || y > size) {
       throw new Error("attack coordinates outside board");
     }
@@ -62,12 +64,22 @@ export default function Gameboard(size) {
         if (coordinates.join(',') === location) {
           el.ship.hit();
           this.moves.add(coordinates.join(','));
-          return "hit";
+          result = {
+            hit: true,
+            ship: el.ship.id,
+            sunken: el.ship.sunken 
+          }
+          return result;
         }
       }
     }
     this.moves.add(coordinates.join(','));
-    return "miss";
+    result = {
+      hit: false,
+      ship: null,
+      sunken: null
+    }
+    return result;
   };
 
   this.allSunk = function () {

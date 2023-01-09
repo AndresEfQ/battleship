@@ -8,8 +8,11 @@
   <script src="main.js" defer></script>
 </head>
 <body>
-  <div class="pass-device">
-    <img id="arrow" src="./images/arrow.svg" alt="arrow">
+  <div id="pass-device" class="pass-device not-visible">
+    <svg id="arrow" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
+      <metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
+      <g><path id="path" d="M10,500h306.3v490h367.5V500H990L500,10L10,500z"/></g>
+      </svg>
     <button id="receive-device">GOT IT</button>
   </div>
   <div class="container">
@@ -25,7 +28,7 @@
     <div class="player2">
       <div class="hide-player" id="hide-player2"></div>
       <div class="gameboard" id="gameboard2">
-        <div class="hide-gameboard p2">
+        <div class="hide-gameboard p2" id="hide-gameboard2">
           <img src="./images/clouds1.png" id="clouds1" alt="clouds">
           <img src="./images/clouds2.png" id="clouds2" alt="clouds">
         </div>
@@ -54,6 +57,7 @@
           <div class="cellH">10</div>
         </div>
         <div class="grid 2" id="test-grid"></div>
+        <div class="message" id="message1">You hit the submarine</div>
       </div>
       <header>
         <h1>Place your ships</h1>
@@ -88,9 +92,9 @@
       <button id="reset-ships">Reset Ships</button>
     </div>
 
-    <div class="player1">
+    <div class="player1" id="player1">
       <div class="gameboard" id="gameboard1">
-        <div class="hide-gameboard p1">
+        <div class="hide-gameboard p1" id="hide-gameboard1">
           <img src="./images/clouds1.png" id="clouds1" alt="clouds">
           <img src="./images/clouds2.png" id="clouds2" alt="clouds">
         </div>
@@ -119,6 +123,7 @@
           <div class="cellH">10</div>
         </div>
         <div class="grid 1"></div>
+        <div class="message" id="message2"></div>
       </div>
       <header>
         <h1>Place your ships</h1>

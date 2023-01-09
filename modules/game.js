@@ -10,6 +10,8 @@ export default function Game(DomGameboard, DomShip, mode, size) {
     new Player(DomGameboard, DomShip, '2', 'computer');
   this.gameboard1 = new Gameboard(size);
   this.gameboard2 = new Gameboard(size);
+  this.receiveDevice = document.getElementById('receive-device');
+
   this.activePlayer = this.player1;
 
   this.player1.setGameboards(this.gameboard1, this.gameboard2);
@@ -37,6 +39,8 @@ export default function Game(DomGameboard, DomShip, mode, size) {
   
   this.finishPlacingShips = function () {
     this.activePlayer.domGameboard.hideBoard();
+    this.activePlayer.domGameboard.showPassDevice();
+    this.activePlayer.domGameboard.lockShips();
     this.changeActivePlayer();
     this.activePlayer.domGameboard.orientButtons();
     this.activePlayer.domGameboard.allowPlayer2();
@@ -46,4 +50,12 @@ export default function Game(DomGameboard, DomShip, mode, size) {
       this.activePlayer.domGameboard.attackControls();
     }
   }
+
+  this.showActivePlayerBoard = function () {
+    console.log('show board');
+    this.activePlayer.domGameboard.hidePassDevice();
+  }
+
+  this.receiveDevice.addEventListener('click', () => this.showActivePlayerBoard());
+  this.receiveDevice.addEventListener('touch', () => this.showActivePlayerBoard());
 }

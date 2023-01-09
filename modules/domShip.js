@@ -41,7 +41,7 @@ export default function DomShip(ship, playerId) {
     this.showRotateShip = function () {console.log('Rotation not allowed after placing a ship in the board')};
 
     cell.appendChild(this.shipDiv);
-    this.shipImg.style.left = null;
+    this.shipImg.style.left = 0;
     this.shipImg.style.right = null;
     this.shipImg.style.top = null;
     this.shipImg.style.bottom = null;

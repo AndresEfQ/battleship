@@ -23,6 +23,14 @@ const e = {
   }
 }
 
+const document = {
+  getElementById: function (param) {
+    if (param == 'receive-device') {
+      return null;
+    }
+  }
+}
+
 describe("test ship's atributes and methods", () => {
 
   test("ship gets correct lenght", () => {
@@ -201,13 +209,13 @@ describe("gameboard should receive attacks", () => {
   test("receive attack returns 'hit' if the attack hits", () => {
     const gameboard = new Gameboard(7);
     gameboard.placeShip(new Ship(3), [1,1]);
-    expect(gameboard.receiveAttack([1,1])).toBe("hit");
+    expect(gameboard.receiveAttack([1,1]).hit).toBe(true);
   });
 
   test("receive attack returns 'miss' if the attack misses", () => {
     const gameboard = new Gameboard(7);
     gameboard.placeShip(new Ship(3), [1,1]);
-    expect(gameboard.receiveAttack([2,1])).toBe('miss');
+    expect(gameboard.receiveAttack([2,1]).hit).toBe(false);
   });
 
   test("should throw an error if the receiveAttack parameters are outside the board", () => {
