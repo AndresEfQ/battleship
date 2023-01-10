@@ -18,14 +18,8 @@ export default function Game(DomGameboard, DomShip, mode, size) {
   this.player2.setGameboards(this.gameboard2, this.gameboard1);
 
   this.resetGame = function () {
-    this.gameboard1.resetGameboard();
-    this.gameboard2.resetGameboard();
-    for (let ship of this.gameboard1.board) {
-      this.gameboard1.deleteShip(ship.coordinates[0]);
-    }
-    for (let ship of this.gameboard2.board) {
-      this.gameboard2.deleteShip(ship.coordinates[0]);
-    }
+    this.player1.resetAllShips();
+    this.player2.resetAllShips();
   }
 
   this.changeActivePlayer = function () {
@@ -33,6 +27,16 @@ export default function Game(DomGameboard, DomShip, mode, size) {
   }
 
   this.passDevice = function () {
+    if (this.player2.type === 'computer') {
+      let result = this.player2.attack();
+      this.player2.domGameboard.receiveAttack(null, result);
+      this.activePlayer.domGameboard.attackControls();
+      this.player2.domGameboard.hideBoard();
+      this.player1.domGameboard.resetMessage();
+      setTimeout(() => this.player2.domGameboard.resetMessage(), 2500);
+      
+      return;
+    }
     this.activePlayer.domGameboard.passDevice();
     this.changeActivePlayer();
     this.activePlayer.domGameboard.orientButtons();
@@ -40,10 +44,19 @@ export default function Game(DomGameboard, DomShip, mode, size) {
   }
   
   this.finishPlacingShips = function () {
+    if (this.player2.type == 'computer') {
+      this.player2.domGameboard.hideBoard();
+      this.player2.randomizeShips();
+      this.activePlayer.domGameboard.attackControls();
+      this.activePlayer.domGameboard.allowPlayer2();
+      this.player1.domGameboard.lockShips();
+      this.player2.domGameboard.lockShips();
+      return;
+    } 
     this.activePlayer.domGameboard.hideBoard();
     this.activePlayer.domGameboard.showPassDevice();
-    this.activePlayer.domGameboard.lockShips();
     this.changeActivePlayer();
+    this.activePlayer.domGameboard.lockShips();
     this.activePlayer.domGameboard.orientButtons();
     this.activePlayer.domGameboard.allowPlayer2();
     if (!this.activePlayer.areShipsPlaced) {
@@ -55,6 +68,8 @@ export default function Game(DomGameboard, DomShip, mode, size) {
 
   this.showActivePlayerBoard = function () {
     this.activePlayer.domGameboard.hidePassDevice();
+    let shouldBlock = this.activePlayer.areShipsPlaced;
+    this.activePlayer.domGameboard.showBoard(shouldBlock);
   }
 
   this.receiveDevice.addEventListener('click', () => this.showActivePlayerBoard());

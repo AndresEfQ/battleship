@@ -26,7 +26,6 @@ for (let button of playModes) {
   });
   button.addEventListener('click', (e) => {
     game = new Game(DomGameboard, DomShip, e.target.dataset.mode, 10);
-    console.log(game);
     startGame.classList.add('not-visible');
     setGame(game);
   });
@@ -40,8 +39,16 @@ const finishPlacingShips = document.getElementById('finish');
 const resetGame = document.getElementById('reset-game');
 const resetShips = document.getElementById('reset-ships');
 
-newGameButton.addEventListener('touch', () => startGame.classList.remove('not-visible'));
-newGameButton.addEventListener('click', () => startGame.classList.remove('not-visible'));
+newGameButton.addEventListener('touch', () => {
+  if (window.confirm('Are you sure you and your friend want to reset the game?')) {
+    window.location.reload();
+  }
+});
+newGameButton.addEventListener('click', () => {
+  if (window.confirm('Are you sure you and your friend want to reset the game?')) {
+    window.location.reload();
+  }
+});
 
 pass.addEventListener('touch', () => game.passDevice());
 pass.addEventListener('click', () => game.passDevice());
@@ -55,8 +62,16 @@ random.addEventListener('click', () => game.activePlayer.randomizeShips());
 resetShips.addEventListener('touch', () => game.activePlayer.resetAllShips());
 resetShips.addEventListener('click', () => game.activePlayer.resetAllShips());
 
-resetGame.addEventListener('touch', () => game.resetGame());
-resetGame.addEventListener('click', () => game.resetGame());
+resetGame.addEventListener('touch', () => {
+  if (window.confirm('Are you sure you and your friend want to reset the game?')) {
+    window.location.reload();
+  }
+});
+resetGame.addEventListener('click', () => {
+  if (window.confirm('Are you sure you and your friend want to reset the game?')) {
+    window.location.reload();
+  }
+});
 
 // TODO place this function in game
 function setGame(game) {

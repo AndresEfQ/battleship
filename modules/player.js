@@ -62,15 +62,13 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
     try {
       this.ownGameboard.placeShip(domShip.ship, [xCoord, yCoord], direction);
       domShip.positionShip(coordinates);
-      console.log(this.ownGameboard);
       return 1;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       domShip.resetShip();
       return 0;
     } finally {
       this.checkFinishShipPlacement();
-      console.log(this.ownGameboard.board);
     }
   }
 
@@ -86,11 +84,10 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
     this.ownGameboard.resetShips();
     this.domGameboard.resetAllShips();
     this.domGameboard.placeShipsControls();
-    console.log(this.ownGameboard);
   }
 
   this.randomizeShips = function () {
-    console.log('randomize called');
+    this.ownGameboard.resetShips();
     for (let domShip of this.domShips) {
       let placedShip;
       let x;
@@ -116,13 +113,12 @@ export default function Player(DomGameboard, DomShip, id, type = 'human') {
           this.ownGameboard.placeShip(domShip.ship, [x,y], direction);
           placedShip = true;
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
       domShip.direction = direction;
       domShip.placeShip(`${x},${y}`, direction);
     }
-    console.log(this.ownGameboard);
     this.checkFinishShipPlacement();
     return;
   }

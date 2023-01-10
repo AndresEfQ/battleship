@@ -91,9 +91,12 @@ export default function DomGameboard(player) {
   this.passDevice = function () {
     this.showPassDevice();
     this.hideBoard();
+    this.resetMessage();
+  }
+  
+  this.resetMessage = function () {
     this.message.classList.remove('show_message');
   }
-
   /*
   * Helper function to hide control buttons when no longer needed
   */
@@ -144,10 +147,11 @@ export default function DomGameboard(player) {
     this.gameboard.classList.remove('block-gameboard');
   }
 
-  this.showBoard = function () {
-    console.log(this.gameboard);
+  this.showBoard = function (block) {
     this.gameboard.classList.remove('opaque');
-    this.gameboard.classList.add('block-gameboard');
+    if (block) {
+      this.gameboard.classList.add('block-gameboard');
+    }
   }
 
   this.hidePlayer2.addEventListener('click', () => this.highlightPlayer1())
@@ -170,7 +174,6 @@ export default function DomGameboard(player) {
 
   this.showPassDevice = function () {
     this.passDeviceArrow.classList.remove('not-visible');
-    console.log(this.player.id);
     if (this.player.id == 2) {
       this.passDeviceArrow.style.transform = 'rotate(0deg)';
     } else {
@@ -180,11 +183,11 @@ export default function DomGameboard(player) {
 
   this.hidePassDevice = function () {
     this.passDeviceArrow.classList.add('not-visible');
-    this.showBoard();
   }
 
   this.lockShips = function () {
-    for (let cell of this.grid.children) {
+    let grid = this.player.id == 1 ? grids[0] : grids[1];
+    for (let cell of grid.children) {
       cell.addEventListener('click', (e) => this.receiveAttack(e));
       cell.addEventListener('touch', (e) => this.receiveAttack(e));
       if (cell.children.length) {
@@ -195,20 +198,21 @@ export default function DomGameboard(player) {
     }
   }
 
-  this.receiveAttack = function (e) {
-    let attack = this.player.attack(e.target.dataset.coordinates.split(','));
-    console.log(attack);
+  this.receiveAttack = function (e, attack = this.player.attack(e.target.dataset.coordinates.split(','))) {
+    let coordinates = attack.coordinates;
+    let cell = document.querySelectorAll(`[data-coordinates="${coordinates}"]`)[this.player.id == 1 ? 0 : 1];
     if (!attack.hit) {
-      e.target.append('O');
-      e.target.classList.add('miss');
+      cell.append('O');
+      cell.classList.add('miss');
     } else {
-      e.target.append('X');
-      e.target.classList.add('hit');
+      cell.append('X');
+      cell.classList.add('hit');
     }
     this.showAttackMessage(attack);
     for (let gameboard of this.allGameboards) {
       gameboard.classList.add('block-gameboard');
     }
+    if (attack.allSunk) this.showWinner();
     this.hide(this.inactivePass);
     this.show(this.pass);
   }
@@ -222,4 +226,10 @@ export default function DomGameboard(player) {
     this.message.classList.add('show_message');
   }
 
+  this.showWinner = function () {
+    const startGame = document.querySelector('.start-game');
+    startGame.innerHTML = `CONGRATULATIONS PLAYER ${this.player.id}! YOU WIN`;
+    startGame.append(this.newGame);
+    startGame.classList.remove('not-visible');
+  }
 }
